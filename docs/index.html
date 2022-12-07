@@ -71,8 +71,6 @@
 </ul>
 </li>
 </ul>
-<p>Positive: 何かお知らせを書きたい時のボックス</p>
-<p>Negative: 何か注意点などを書きたい時のボックス</p>
 
 
       </google-codelab-step>
@@ -81,12 +79,20 @@
         <ul>
 <li>AWS Lambda を構築します</li>
 </ul>
+<p>Positive : This will appear in a positive info box.</p>
+<p>Negative : This will appear in a negative info box.</p>
+<aside class="special"><p> This will appear in a positive info box. </p>
+</aside>
+<aside class="warning"><p> This will appear in a negative info box. </p>
+</aside>
+<p><br>  [Download SDK](https://www.google.com)<br></p>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="CodeCommit の準備" duration="5">
-        
+        <p><br> [CodeCommit](https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories?region=ap-northeast-1)<br></p>
+
 
       </google-codelab-step>
     
@@ -100,34 +106,34 @@
 <p>作成した CodeCommit リポジトリに対して、ファイルを追加してみましょう。</p>
 <p>CodeCommit でHTTPS(GRC)をコピー</p>
 <p>Cloud9 の画面下部にのターミナルにコピーして実行</p>
-<pre><code language="language-shell" class="language-shell">git clone codecommit::ap-northeast-1://lambda-cdcd-hands-on
-</code></pre>
+<pre>git clone codecommit::ap-northeast-1://lambda-cdcd-hands-on
+</pre>
 <p>下ごしらえ</p>
-<pre><code language="language-shell" class="language-shell">git config --global user.name &#34;Your Name&#34;
+<pre>git config --global user.name &#34;Your Name&#34;
 git config --global user.email you@example.com
-</code></pre>
+</pre>
 <p>レスポンス</p>
-<pre><code language="language-shell" class="language-shell">Cloning into &#39;lambda-cdcd-hands-on&#39;...
+<pre>Cloning into &#39;lambda-cdcd-hands-on&#39;...
 warning: You appear to have cloned an empty repository.
-</code></pre>
+</pre>
 <p>空のディレクトリがコピーされるので、そのディレクトリに移動します</p>
-<pre><code language="language-shell" class="language-shell">cd lambda-cdcd-hands-on
-</code></pre>
+<pre>cd lambda-cdcd-hands-on
+</pre>
 <p>試しに、AWS上の CodeCommit に追加するファイルを作成します</p>
-<pre><code language="language-shell" class="language-shell">touch test.md
-</code></pre>
+<pre>touch test.md
+</pre>
 <p>Cloud9 で 作成されたファイルに追記してみましょう</p>
 <pre><code language="language-markdown" class="language-markdown"># test
 Lambda の CI/CD を作って見ましょう。
 </code></pre>
 <p>git のステージエリアにファイルを追加します</p>
-<pre><code language="language-shell" class="language-shell">git add test.md
-</code></pre>
+<pre>git add test.md
+</pre>
 <p>ステージに登録されているか、確認してみましょう</p>
-<pre><code language="language-shell" class="language-shell">git status
-</code></pre>
+<pre>git status
+</pre>
 <p>レスポンス</p>
-<pre><code language="language-shell" class="language-shell">On branch master
+<pre>On branch master
 
 No commits yet
 
@@ -135,19 +141,19 @@ Changes to be committed:
   (use &#34;git rm --cached &lt;file&gt;...&#34; to unstage)
         new file:   test.md
 
-</code></pre>
+</pre>
 <p>変更したファイルを コミットします</p>
-<pre><code language="language-shell" class="language-shell">git commit -m &#34;ファーストコミット&#34;
-</code></pre>
+<pre>git commit -m &#34;ファーストコミット&#34;
+</pre>
 <p>CodeCommit に追加します</p>
-<pre><code language="language-shell" class="language-shell">git push
-</code></pre>
+<pre>git push
+</pre>
 <p>AWS コンソールで CodeCommit を開いて、ファイルが追加されていることを確認しましょう</p>
 <h2 is-upgraded>ユーザ設定</h2>
-<pre><code language="language-shell" class="language-shell">git config --global user.name &lt;USER_NAME&gt;
+<pre>git config --global user.name &lt;USER_NAME&gt;
 git config --global user.email &lt;USER_EMAIL&gt;
 
-</code></pre>
+</pre>
 
 
       </google-codelab-step>
