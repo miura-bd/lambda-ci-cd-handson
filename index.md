@@ -41,15 +41,30 @@ Duration: 0:05:00
 - IDE
   - AWS Cloud9
 
-Positive: 何かお知らせを書きたい時のボックス
-
-Negative: 何か注意点などを書きたい時のボックス
 
 ## 今回構築するもの
 
 Duration: 0:05:00
 
 - AWS Lambda を構築します
+
+Positive
+: This will appear in a positive info box.
+
+Negative
+: This will appear in a negative info box.
+
+<aside class="positive">
+This will appear in a positive info box.
+</aside>
+
+<aside class="negative">
+This will appear in a negative info box.
+</aside>
+
+<button>
+  [Download SDK](https://www.google.com)
+</button>
 
 ## CodeCommit の準備
 
@@ -73,32 +88,32 @@ CodeCommit でHTTPS(GRC)をコピー
 
 Cloud9 の画面下部にのターミナルにコピーして実行
 
-```shell
+```console
 git clone codecommit::ap-northeast-1://lambda-cdcd-hands-on
 ```
 
 下ごしらえ
-```shell
+```console
 git config --global user.name "Your Name"
 git config --global user.email you@example.com
 ```
 
 レスポンス
 
-```shell
+```console
 Cloning into 'lambda-cdcd-hands-on'...
 warning: You appear to have cloned an empty repository.
 ```
 
 空のディレクトリがコピーされるので、そのディレクトリに移動します
 
-```shell
+```console
 cd lambda-cdcd-hands-on
 ```
 
 試しに、AWS上の CodeCommit に追加するファイルを作成します
 
-```shell
+```console
 touch test.md
 ```
 
@@ -111,18 +126,18 @@ Lambda の CI/CD を作って見ましょう。
 
 git のステージエリアにファイルを追加します
 
-```shell
+```console
 git add test.md
 ```
 
 ステージに登録されているか、確認してみましょう
 
-```shell
+```console
 git status
 ```
 
 レスポンス
-```shell
+```console
 On branch master
 
 No commits yet
@@ -136,13 +151,13 @@ Changes to be committed:
 
 変更したファイルを コミットします
 
-```shell
+```console
 git commit -m "ファーストコミット"
 ```
 
 CodeCommit に追加します
 
-```shell
+```console
 git push
 ```
 
@@ -153,7 +168,7 @@ AWS コンソールで CodeCommit を開いて、ファイルが追加されて�
 ### ユーザ設定
 
 
-```shell
+```console
 git config --global user.name <USER_NAME>
 git config --global user.email <USER_EMAIL>
 
