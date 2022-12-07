@@ -1,6 +1,6 @@
 author: 作成者名
 summary: 説明文
-id: 20221215-lambda-cicd-hands-on
+id: docs
 categories: codelab,markdown
 environments: Web
 status: Draft
