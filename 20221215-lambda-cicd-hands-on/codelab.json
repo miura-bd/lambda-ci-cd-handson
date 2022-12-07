@@ -1,0 +1,25 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2022-12-07T20:06:59+09:00",
+  "id": "20221215-lambda-cicd-hands-on",
+  "duration": 5,
+  "title": "Lambda CI/CD ハンズオン",
+  "summary": "説明文",
+  "source": "index.md",
+  "theme": "",
+  "status": [
+    "draft"
+  ],
+  "category": [
+    "codelab",
+    "markdown"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/miura-bd/lambda-ci-cd-handson",
+  "url": "20221215-lambda-cicd-hands-on"
+}
