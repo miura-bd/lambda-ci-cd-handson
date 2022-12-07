@@ -3,9 +3,9 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2022-12-07T20:09:59+09:00",
+  "updated": "2022-12-07T20:53:51+09:00",
   "id": "docs",
-  "duration": 5,
+  "duration": 40,
   "title": "Lambda CI/CD ハンズオン",
   "summary": "説明文",
   "source": "index.md",
@@ -20,6 +20,6 @@
   "tags": [
     "web"
   ],
-  "feedback": "https://github.com/miura-bd/lambda-ci-cd-handson",
+  "feedback": "https://github.com/miura-bd/lambda-ci-cd-handson/issues",
   "url": "docs"
 }
