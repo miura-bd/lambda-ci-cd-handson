@@ -30,29 +30,8 @@
       <google-codelab-step label="はじめに" duration="5">
         <h2 is-upgraded>はじめに</h2>
 <h3 is-upgraded>色々な選択肢</h3>
-<p class="image-container"><img alt="技術コンポーネント" src="img/790ad569efcadbe0.png"></p>
-<ul>
-<li>repository <ul>
-<li>CodeCommit</li>
-<li>GitHub</li>
-</ul>
-</li>
-<li>framework <ul>
-<li>AWS SAM</li>
-<li>serverless framework</li>
-</ul>
-</li>
-<li>deploy <ul>
-<li>CodeBuild</li>
-</ul>
-</li>
-<li>IDE <ul>
-<li>AWS Cloud9</li>
-<li>Visual Studio Code</li>
-</ul>
-</li>
-</ul>
-<p>組み合わせは色々ありますが、今回は以下のものを使用します</p>
+<p class="image-container"><img alt="技術コンポーネント" src="img/e8f868921befcf0d.png"></p>
+<p>LambdaのCI/CDを構築するための方法は、様々ありますが、 今回は以下のものを使用します</p>
 <ul>
 <li>repository <ul>
 <li>CodeCommit</li>
@@ -64,6 +43,7 @@
 </li>
 <li>deploy <ul>
 <li>CodeBuild</li>
+<li>CodePipeline</li>
 </ul>
 </li>
 <li>IDE <ul>
@@ -76,55 +56,75 @@
       </google-codelab-step>
     
       <google-codelab-step label="今回構築するもの" duration="5">
-        <ul>
-<li>AWS Lambda を構築します</li>
+        <p class="image-container"><img alt="全体像" src="img/136da9afe1a01964.png"></p>
+<ul>
+<li>CodeCommit をリポジトリとして、ソースコードを管理します。</li>
+<li>CodeCommit のブランチで、開発環境と、本番環境を分けます <ul>
+<li>master ブランチは開発環境</li>
+<li>PRODUCTION ブランチは本番環境</li>
 </ul>
-<p>Positive : This will appear in a positive info box.</p>
-<p>Negative : This will appear in a negative info box.</p>
-<aside class="special"><p> This will appear in a positive info box. </p>
-</aside>
-<aside class="warning"><p> This will appear in a negative info box. </p>
-</aside>
-<p><br>  [Download SDK](https://www.google.com)<br></p>
+</li>
+<li>Lambda 関数を AWS SAM を使用して定義します</li>
+<li>開発環境と本番環境のどちらでも使用できる CodeBuild を作成します</li>
+<li>CodeCommit と CodeBuild を CodePipeline を使用して紐づけます <ul>
+<li>開発環境用と本番環境用の2つのパイプラインを作成します</li>
+<li>1つの CodeBuild プロジェクトを使用して、CodePipeline で環境変数を上書きすることで、異なる環境のデプロイを実現します</li>
+</ul>
+</li>
+</ul>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="CodeCommit の準備" duration="5">
-        <p><br> [CodeCommit](https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories?region=ap-northeast-1)<br></p>
+        <h2 is-upgraded>リポジトリの作成（コンソールから実施）</h2>
+<p>リポジトリ名を以下で作成</p>
+<pre>lambda-cicd-hands-on
+</pre>
+<h2 is-upgraded>HTTPS(GRC)でクローンするコマンドをコピー</h2>
+<p>また、後で使用します。</p>
+<pre>git clone codecommit::ap-northeast-1://lambda-cicd-hands-on
+</pre>
+<aside class="special"><p> HTTPS(GRC) を使用するためには、python と git-remote-codecommit が必要ですが、今回使用する Cloud9 は最初から入っているので、そのまま使えます </p>
+</aside>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Cloud9 の準備" duration="5">
-        
+      <google-codelab-step label="Cloud9 の作成" duration="5">
+        <p>「Create environment」をクリック</p>
+<p>以下の名前を入力</p>
+<pre>lambda-cicd-hands-on
+</pre>
+
 
       </google-codelab-step>
     
-      <google-codelab-step label="Cloud9 での操作" duration="0">
+      <google-codelab-step label="Cloud9 と CodeCommit の接続" duration="0">
         <h2 is-upgraded>CodeCommit へのファーストコミットの作成</h2>
 <p>作成した CodeCommit リポジトリに対して、ファイルを追加してみましょう。</p>
 <p>CodeCommit でHTTPS(GRC)をコピー</p>
 <p>Cloud9 の画面下部にのターミナルにコピーして実行</p>
-<pre>git clone codecommit::ap-northeast-1://lambda-cdcd-hands-on
+<pre>git clone codecommit::ap-northeast-1://lambda-cicd-hands-on
 </pre>
-<p>下ごしらえ</p>
+<p>レスポンス</p>
+<pre>Cloning into &#39;lambda-cicd-hands-on&#39;...
+warning: You appear to have cloned an empty repository.
+</pre>
+<p>git のユーザを指定します。</p>
 <pre>git config --global user.name &#34;Your Name&#34;
 git config --global user.email you@example.com
 </pre>
-<p>レスポンス</p>
-<pre>Cloning into &#39;lambda-cdcd-hands-on&#39;...
-warning: You appear to have cloned an empty repository.
-</pre>
+<p>上記を自分の名前とメールアドレスに書き換えて実行してください</p>
 <p>空のディレクトリがコピーされるので、そのディレクトリに移動します</p>
-<pre>cd lambda-cdcd-hands-on
+<pre>cd lambda-cicd-hands-on
 </pre>
 <p>試しに、AWS上の CodeCommit に追加するファイルを作成します</p>
 <pre>touch test.md
 </pre>
 <p>Cloud9 で 作成されたファイルに追記してみましょう</p>
 <pre><code language="language-markdown" class="language-markdown"># test
-Lambda の CI/CD を作って見ましょう。
+ちゃんとpushができるかテスト。
 </code></pre>
 <p>git のステージエリアにファイルを追加します</p>
 <pre>git add test.md
@@ -149,27 +149,455 @@ Changes to be committed:
 <pre>git push
 </pre>
 <p>AWS コンソールで CodeCommit を開いて、ファイルが追加されていることを確認しましょう</p>
-<h2 is-upgraded>ユーザ設定</h2>
-<pre>git config --global user.name &lt;USER_NAME&gt;
-git config --global user.email &lt;USER_EMAIL&gt;
 
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Lambda の準備" duration="0">
+        <p>Cloud9 に戻って、 Lambda 関数を定義するファイルを作成します</p>
+<p>CodeCommi と関連づけられたディレクトリにいることを改めて確認してください</p>
+<p>（master）とブランチ名がコマンドラインに表示されています。</p>
+<pre> (master) $ 
 </pre>
+<p>念のため、ディレクトリの現在地を確認します。</p>
+<pre>pwd
+</pre>
+<p>レスポンス</p>
+<pre>/home/ec2-user/environment/lambda-cicd-hands-on
+</pre>
+<p>もし、違っていたら、Cloud9 上でのカレントディレクトリを確認してください。</p>
+<h2 is-upgraded>Lambda 関数の定義</h2>
+<p>今回は node.js で定義された Lambda 関数を作成します。</p>
+<p>以下のコマンドから、JavaScript ファイルを作成してください</p>
+<pre>touch hello-lambda.js
+</pre>
+<p>Cloud9で <code>hello-lambda.js</code> ファイルを編集し、以下の内容をコピーして保存してください。</p>
+<pre><code language="language-JavaScript" class="language-JavaScript">exports.helloLambdaHandler = async () =&gt; {
+    const message = &#39;Hello, Lambda!&#39;;
+
+    console.info(`${message}`);
+    
+    return message;
+}
+</code></pre>
+<p>先ほどど、同様の手順で、このファイルをCodeCommit に反映させましょう。</p>
+<pre>git add hello-lambda.js
+git commit -m &#34;add: lambda ファイルの追加&#34;
+git push
+</pre>
+<p>CodeCommit の画面で、ファイルが追加されていることを確認してください。 （操作方法は省略）</p>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="AWS SAM の準備" duration="5">
-        
+        <p>Cloud9 には SAM CLI がプリインストールされているので、特に作業は必要ありません。</p>
+<p>Cloud9 のコンソールで以下のコマンドを実行し確認してみましょう。</p>
+<pre>sam --version
+</pre>
+<p>レスポンス</p>
+<pre>SAM CLI, version 1.57.0
+</pre>
+<h2 is-upgraded>SAM で使用する YAML ファイルの作成</h2>
+<pre>touch template.yaml
+</pre>
+<h2 is-upgraded>YAML の内容</h2>
+<p>以下の内容を template.yaml にコピー</p>
+<pre><code language="language-yaml" class="language-yaml">AWSTemplateFormatVersion: 2010-09-09
+Description: &gt;-
+  lambda-cicd-hands-on
+Transform:
+- AWS::Serverless-2016-10-31
+Resources:
+  helloLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: hello-lambda.helloLambdaHandler
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: A Lambda function that returns a static string.
+      Policies:
+        - AWSLambdaBasicExecutionRole
+      FunctionUrlConfig:
+        AuthType: NONE
+Outputs:
+　HelloLambdaFunction:
+    Description: &#34;Hello Lambda Function ARN&#34;
+    Value: !GetAtt helloLambdaFunction.Arn
+  HelloLambdaFunctionUrl:
+    Description: &#34;Function URLs endpoint&#34;
+    Value: !GetAtt helloLambdaFunctionUrl.FunctionUrl
+</code></pre>
+<p>ここで、一旦 デプロイする前に、ローカル (Cloud9上)で実行してみましょう</p>
+<pre>sam local invoke
+</pre>
+<p>Cloud9 上にコンテナが用意され、しばらく待つと実行結果が帰ってきます。</p>
+<pre>Invoking hello-lambda.helloLambdaHandler (nodejs16.x)
+Image was not found.
+Removing rapid images for repo public.ecr.aws/sam/emulation-nodejs16.x
+Building image.......................................................................................................................................
+Skip pulling image and use local one: public.ecr.aws/sam/emulation-nodejs16.x:rapid-1.57.0-x86_64.
+
+Mounting /home/ec2-user/environment/lambda-cicd-hands-on as /var/task:ro,delegated inside runtime container
+2022-12-08T10:51:16.375Z        e1526a13-9113-4aee-8dfe-85a31b8e5159    INFO    Hello from Lambda!
+END RequestId: e1526a13-9113-4aee-8dfe-85a31b8e5159
+REPORT RequestId: e1526a13-9113-4aee-8dfe-85a31b8e5159  Init Duration: 1.45 ms  Duration: 284.76 ms     Billed Duration: 285 ms Memory Size: 128 MB     Max Memory Used: 128 MB
+&#34;Hello, Lambda!&#34;
+</pre>
+<p>Cloud9 上のコンテナでLambdaが実行されました</p>
+<p><code>hello-lambda.js</code> で定義した message が出力されていることが確認できます。</p>
+<p>message の内容を変更して、再度実行すると、内容が変更されていることが分かります。</p>
+<aside class="special"><p> このように、AWS SAM では、実際にデプロイをする前に、ローカルで簡単に動作確認をすることができます。 </p>
+</aside>
+<p>作成した<code>template.yaml</code>　を CodeCommit に push します。</p>
+<pre>git add template.yaml
+git commit -m &#34;add: SAM の テンプレートファイルの追加&#34;
+git push
+</pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="AWS SAM から deploy" duration="0">
+        <p>必要な初期設定と合わせて、Lambda関数をデプロイしてみましょう</p>
+<pre>sam deploy --guided
+</pre>
+<p>以下、対話形式でのプロンプトを通して、初期設定を行い、<code>samconfig.toml</code> ファイルを作成します。</p>
+<aside class="warning"><p> 1箇所だけ、Yを選択するところがあります。内容を確認しながら進めてください。 </p>
+</aside>
+<p>Function URL の部分だけ「Y」を選択しますが、 その他は、デフォルトを使いますので、何も入力せず進めてください。</p>
+<pre>Stack Name [sam-app]: 
+AWS Region [ap-northeast-1]: 
+#Shows you resources changes to be deployed and require a &#39;Y&#39; to initiate deploy
+Confirm changes before deploy [y/N]: 
+#SAM needs permission to be able to create roles to connect to the resources in your template
+Allow SAM CLI IAM role creation [Y/n]: 
+#Preserves the state of previously provisioned resources when an operation fails
+Disable rollback [y/N]: 
+helloLambdaFunction Function Url may not have authorization defined, Is this okay? [y/N]: Y
+Save arguments to configuration file [Y/n]: 
+SAM configuration file [samconfig.toml]: 
+SAM configuration environment [default]: 
+</pre>
+<p>しばらく待っていると、必要なリソースが生成されていきます。</p>
+<p>以下のテキストが表示されたら、成功です。</p>
+<pre>Successfully created/updated stack - sam-app in ap-northeast-1
+</pre>
+<p>この時、デプロイに必要な S3 バケットも同時に作成されています <code>aws-sam-cli-managed-default-samclisourcebucket</code> で始まる名前のバケットが作成されており、後ほど使用します。</p>
+<p>その上に、今回生成した、Lambda Function Url のエンドポイントが表示されていますので、ブラウザで開いてみましょう。</p>
+<p>ブラウザに、<code>Hello, Lambda!</code> が表示されていたら成功です！</p>
+<p>AWS SAM を使って、Lambda関数がデプロイされ、アクセスすることができました！</p>
+<p>最後に、AWS SAM が生成してくれた<code>samconfig.toml</code> を CodeCommit に push します。</p>
+<pre>git add samconfig.toml
+git commit -m &#34;add: toml ファイルの追加&#34;
+git push
+</pre>
+
 
       </google-codelab-step>
     
       <google-codelab-step label="AWS CodeBuild の準備" duration="5">
-        
+        <h2 is-upgraded>template.yaml の更新</h2>
+<p>複数環境に対応するために、<code>template.yaml</code> ファイルを変更します。</p>
+<p>以下を丸っとコピーして上書きしてください。</p>
+<p>Parameters と　FunctionName の部分を追記してます。</p>
+<pre><code language="language-yaml" class="language-yaml">AWSTemplateFormatVersion: 2010-09-09
+Description: &gt;-
+  lambda-cicd-hands-on
+Transform:
+- AWS::Serverless-2016-10-31
+Parameters: # 追加部分
+  Env: # prd: 本番、dev: 開発
+    Type: String
+    AllowedValues:
+      - prd
+      - dev
+      - manual
+    Default: manual
+
+Resources:
+  helloLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: hello-lambda.helloLambdaHandler
+      FunctionName:  # 追加部分
+        !Join
+          - &#39;&#39;
+          - - &#39;hello-lambda&#39;
+            - &#39;-&#39;
+            - !Ref Env
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: A Lambda function that returns a static string.
+      Policies:
+        - AWSLambdaBasicExecutionRole
+      FunctionUrlConfig:
+        AuthType: NONE
+Outputs:
+  HelloLambdaFunctionUrl:
+    Description: &#34;Function URLs endpoint&#34;
+    Value: !GetAtt helloLambdaFunctionUrl.FunctionUrl
+</code></pre>
+<aside class="warning"><p> この差分がちょっとわかりづらいかも？？ </p>
+</aside>
+<h2 is-upgraded>buildspec.yml の作成</h2>
+<p>CodeBuild での実行を定義する buildspec.yml ファイルを作成します</p>
+<pre>touch buildspec.yml
+</pre>
+<p>作成した buildspec.yml に以下の内容をコピーします</p>
+<pre><code language="language-yaml" class="language-yaml">version: 0.2
+
+phases:
+  build:
+    commands:
+      - aws cloudformation package --template-file template.yaml --s3-bucket $S3_BUCKET --output-template-file output.yml
+      - aws cloudformation deploy --template-file output.yml --s3-bucket $S3_BUCKET --stack-name $STACKNAME --capabilities CAPABILITY_IAM --region $REGION --parameter-overrides Env=$ENV
+      - aws cloudformation describe-stacks --stack-name $STACKNAME
+</code></pre>
+<aside class="special"><p> buildspec.yaml の中で＄から始まっているものは、CodeBuild プロジェクトの環境変数として、この後AWS コンソールから定義するものです。 </p>
+</aside>
+<p>ここで定義したコマンドが、CodeBuild でビルドする時に実行されるコマンドなのですが、先ほどダメした、sam のコマンドが出てきません。</p>
+<p>それは、CodeBuild が実行時に使用するコンテナには、AWS SAM がインストールされていないためです。</p>
+<p>SAMで使用するテンプレートファイルは CloudFormation の拡張なので、AWS CLI での CloudFormation のオプションをそのまま使うことができます。</p>
+<p>次は、変更したファイルをまとめて、CodeCommit へ push してみましょう。</p>
+<pre>git add .
+git commit -m &#34;update: CodeBuild 対応&#34;
+git push
+</pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="AWS CodeBuild プロジェクトの作成" duration="0">
+        <p>コンソールからの操作になります。</p>
+<p>プロジェクトの作成をクリックします</p>
+<h2 is-upgraded>プロジェクトの設定</h2>
+<p>プロジェクト名に以下の文字列をコピーします</p>
+<pre>lambda-cicd-hands-on
+</pre>
+<h2 is-upgraded>ソース</h2>
+<p>ソースプロバイダで「CodeCommit」を選択</p>
+<p>リポジトリで今回作成した「lambda-cicd-hands-on」を選択</p>
+<p>リファレンスタイプはデフォルトのまま「ブランチ」を設定し</p>
+<p>「master」ブランチを選択します。</p>
+<h2 is-upgraded>環境</h2>
+<p>以下の様に設定します</p>
+<table>
+<tr><td colspan="2" rowspan="1"></td><td colspan="1" rowspan="1"></td></tr>
+<tr><td colspan="1" rowspan="1"><p>環境イメージ</p>
+</td><td colspan="1" rowspan="1"><p>マネージド型イメージ</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>オペレーティングシステム</p>
+</td><td colspan="1" rowspan="1"><p>Amazon Linux 2</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>ランタイム</p>
+</td><td colspan="1" rowspan="1"><p>Standard</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>イメージ</p>
+</td><td colspan="1" rowspan="1"><p>aws/codebuild/amazonlinux2-x86_64-standard:4.0</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>環境タイプ</p>
+</td><td colspan="1" rowspan="1"><p>Linux</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>特権付与</p>
+</td><td colspan="1" rowspan="1"><p>選択しない</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>サービスロール</p>
+</td><td colspan="1" rowspan="1"><p>新しいサービルロール　</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>ロール名　</p>
+</td><td colspan="1" rowspan="1"><p>そのまま　</p>
+</td></tr>
+</table>
+<h3 is-upgraded>追加設定</h3>
+<p>隠れている「追加設定」をクリックし、環境変数を4つ設定します</p>
+<p>「環境変数の追加」をクリックすると行を増やすことができます。</p>
+<p>ここで、AWS SAM が作成した S3 Bucket 名を使用します。 S3のコンソールから<code>aws-sam-cli-managed-default-samclisourcebucket</code>で検索し、バケット名をコピーしてください</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>名前</p>
+</td><td colspan="1" rowspan="1"><p>値</p>
+</td><td colspan="1" rowspan="1"><p>タイプ</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>S3_BUCKET</p>
+</td><td colspan="1" rowspan="1"><p>aws-sam-cli-managed-default-samclisourcebucket-8uomdf4v5spw</p>
+</td><td colspan="1" rowspan="1"><p>プレーンテキスト</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>STACKNAME</p>
+</td><td colspan="1" rowspan="1"><p>sam-app</p>
+</td><td colspan="1" rowspan="1"><p>プレーンテキスト</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>REGION</p>
+</td><td colspan="1" rowspan="1"><p>ap-northeast-1</p>
+</td><td colspan="1" rowspan="1"><p>プレーンテキスト</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>ENV</p>
+</td><td colspan="1" rowspan="1"><p>manual</p>
+</td><td colspan="1" rowspan="1"><p>プレーンテキスト</p>
+</td></tr>
+</table>
+<p>あとはそのままで大丈夫です。</p>
+<p>「ビルドプロジェクトを作成する」をクリックします。</p>
+<p>プロジェクトが正常に作成されると、自動的に画面が変わるので、それまで待ちます。</p>
+<p>完成したらビルドに必要なIAMを追加していきます。</p>
+<h2 is-upgraded>IAM Role にポリシーを追加</h2>
+<p>先ほど、プロジェクトの作成に合わせて作成した IAM ロールに、必要な IAM ポリシー を追加していきます。</p>
+<p>AWS コンソールから、IAMを開いて、左のペインから「ロール」を選択 <code>codebuild-lambda-cicd-hands-on-service-role</code> で検索してください</p>
+<p>この IAM ロール に以下のものをアタッチしてください。</p>
+<ul>
+<li>IAMFullAccess</li>
+<li>AmazonS3FullAccess</li>
+<li>CloudWatchFullAccess</li>
+<li>AWSCloudFormationFullAccess</li>
+<li>AWSLambda_FullAccess</li>
+</ul>
+<p>アタッチ後、IAMの画面は以下の様になります。</p>
+<h2 is-upgraded>ビルドの開始</h2>
+<p>CodeBuild を AWS コンソールから実行をしてみましょう。</p>
+<p>「フェーズ詳細」タブを開くと、進捗がわかります。</p>
+<p>ステータスが成功になったら、完了です。</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="CodePipeline の作成" duration="0">
+        <p>コンソールから作成</p>
+<p>AWS コンソールで CodePipeline を開きます。</p>
+<p>「パイプラインの作成」をクリック</p>
+<p>まずは、開発環境用のパイプラインを作成します。</p>
+<h2 is-upgraded>Step 1 パイプラインの設定を選択する</h2>
+<p>パイプライン名に以下をコピー。</p>
+<p>開発環境用のパイプラインだとわかる様に、末尾に<code>-dev</code>を付けます。</p>
+<pre>lambda-hands-on-dev
+</pre>
+<pre>AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-dev
+</pre>
+<h2 is-upgraded>Step 2 ソースステージを追加する</h2>
+<table>
+<tr><td colspan="2" rowspan="1"></td><td colspan="1" rowspan="1"></td></tr>
+<tr><td colspan="1" rowspan="1"><p>ソースプロバイダー</p>
+</td><td colspan="1" rowspan="1"><p>AWS CodeCommit</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>リポジトリ名</p>
+</td><td colspan="1" rowspan="1"><p>lambda-cicd-hands-on</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>ブランチ名</p>
+</td><td colspan="1" rowspan="1"><p>master</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Step 3 ビルドステージを追加する</h2>
+<table>
+<tr><td colspan="2" rowspan="1"></td><td colspan="1" rowspan="1"></td></tr>
+<tr><td colspan="1" rowspan="1"><p>プロバイダーを構築する</p>
+</td><td colspan="1" rowspan="1"><p>AWS CodeBuild</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>リージョン</p>
+</td><td colspan="1" rowspan="1"><p>アジアパシフィック（東京）</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>プロジェクト名</p>
+</td><td colspan="1" rowspan="1"><p>lambda-cicd-hands-on</p>
+</td></tr>
+</table>
+<p>先ほど、CodeBuild プロジェクトで設定した環境変数を、ここで一部上書きします。</p>
+<p>この設定によって、同じプロジェクトを使用して、開発環境と本番環境を使い分けることができます。</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>名前</p>
+</td><td colspan="1" rowspan="1"><p>値</p>
+</td><td colspan="1" rowspan="1"><p>タイプ</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>STACKNAME</p>
+</td><td colspan="1" rowspan="1"><p>sam-app-dev</p>
+</td><td colspan="1" rowspan="1"><p>プレーンテキスト</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>ENV</p>
+</td><td colspan="1" rowspan="1"><p>dev</p>
+</td><td colspan="1" rowspan="1"><p>プレーンテキスト</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Step 4 デプロイステージを追加する</h2>
+<p>スキップします。</p>
+<h2 is-upgraded>Step 5 レビュー</h2>
+<p>内容を確認して、「パイプラインを作成する」をクリック。</p>
+<h2 is-upgraded>パイプラインの実行</h2>
+<p>しばらく待つと、パイプラインが動き出します。</p>
+<p>CodeBuild をクリックして、詳細を確認してみましょう。</p>
+
 
       </google-codelab-step>
     
       <google-codelab-step label="複数環境の構築" duration="5">
-        
+        <p>次に、本番環境用のリソースを作成していきましょう。</p>
+<p>CodeCommit に本番環境ブランチを作成するため、Cloud9 に戻って、以下のコマンドを作成します。</p>
+<pre>git branch PRODUCTION
+</pre>
+<p>新しく作成したブランチに checkout します</p>
+<pre>git checkout PRODUCTION
+</pre>
+<p>CodeCommit に PRODUCTION ブランチを新規に追加します</p>
+<pre>git push --set-upstream origin PRODUCTION
+</pre>
+<h2 is-upgraded>CodePipeline をもう一つ作成します。</h2>
+<p>本番環境用のパイプラインを作成します。</p>
+<h2 is-upgraded>Step 1 パイプラインの設定を選択する</h2>
+<p>パイプライン名に以下をコピー。</p>
+<pre>lambda-hands-on-prd
+</pre>
+<p>開発環境用のパイプラインだとわかる様に、末尾に<code>-prd</code>を付けます。</p>
+<h2 is-upgraded>Step 2 ソースステージを追加する</h2>
+<table>
+<tr><td colspan="2" rowspan="1"></td><td colspan="1" rowspan="1"></td></tr>
+<tr><td colspan="1" rowspan="1"><p>ソースプロバイダー</p>
+</td><td colspan="1" rowspan="1"><p>AWS CodeCommit</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>リポジトリ名</p>
+</td><td colspan="1" rowspan="1"><p>lambda-cicd-hands-on</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>ブランチ名</p>
+</td><td colspan="1" rowspan="1"><p>PRODUCTION</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Step 3 ビルドステージを追加する</h2>
+<table>
+<tr><td colspan="2" rowspan="1"></td><td colspan="1" rowspan="1"></td></tr>
+<tr><td colspan="1" rowspan="1"><p>プロバイダーを構築する</p>
+</td><td colspan="1" rowspan="1"><p>AWS CodeBuild</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>リージョン</p>
+</td><td colspan="1" rowspan="1"><p>アジアパシフィック（東京）</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>プロジェクト名</p>
+</td><td colspan="1" rowspan="1"><p>lambda-cicd-hands-on</p>
+</td></tr>
+</table>
+<p>先ほど、CodeBuild プロジェクトで設定した環境変数を、ここで一部上書きします。</p>
+<p>この設定によって、同じプロジェクトを使用して、開発環境と本番環境を使い分けることができます。</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>名前</p>
+</td><td colspan="1" rowspan="1"><p>値</p>
+</td><td colspan="1" rowspan="1"><p>タイプ</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>STACKNAME</p>
+</td><td colspan="1" rowspan="1"><p>sam-app-prd</p>
+</td><td colspan="1" rowspan="1"><p>プレーンテキスト</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>ENV</p>
+</td><td colspan="1" rowspan="1"><p>prd</p>
+</td><td colspan="1" rowspan="1"><p>プレーンテキスト</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Step 4 デプロイステージを追加する</h2>
+<p>スキップします。</p>
+<h2 is-upgraded>Step 5 レビュー</h2>
+<p>内容を確認して、「パイプラインを作成する」をクリック。</p>
+<p>CodePipeline に本番環境用のパイプラインを作成します</p>
+<p>AWS コンソールから、プルリクエストを作成します</p>
+<p>AWS コンソールから、プルリクエストをマージします</p>
+
 
       </google-codelab-step>
     
