@@ -69,16 +69,23 @@ This will appear in a negative info box.
 ## CodeCommit の準備
 
 Duration: 0:05:00
+### リポジトリの作成（コンソールから実施）
 
-<button>
- [CodeCommit](https://ap-northeast-1.console.aws.amazon.com/codesuite/codecommit/repositories?region=ap-northeast-1)
-</button>
+リポジトリ名を以下で作成
 
-## Cloud9 の準備
+lambda-cicd-hands-on
+### HTTPS(GRC)でクローンするコマンドをコピー
+
+<aside class="positive">
+python と git-remote-codecommit が必要ですが、今回使用する Cloud9 は最初から入っているので、そのまま使えます
+</aside>
+
+## Cloud9 の準備（コンソールから操作）
 
 Duration: 0:05:00
 
-## Cloud9 での操作
+スクショどーんでオープン
+
 
 ### CodeCommit へのファーストコミットの作成
 
@@ -89,26 +96,30 @@ CodeCommit でHTTPS(GRC)をコピー
 Cloud9 の画面下部にのターミナルにコピーして実行
 
 ```console
-git clone codecommit::ap-northeast-1://lambda-cdcd-hands-on
+git clone codecommit::ap-northeast-1://lambda-cicd-hands-on
 ```
 
-下ごしらえ
+git のユーザを指定します。
+これをやっておかないと途中で怒られます
+
 ```console
 git config --global user.name "Your Name"
 git config --global user.email you@example.com
 ```
+上記を自分のものに書き換えて実行してください
+
 
 レスポンス
 
 ```console
-Cloning into 'lambda-cdcd-hands-on'...
+Cloning into 'lambda-cicd-hands-on'...
 warning: You appear to have cloned an empty repository.
 ```
 
 空のディレクトリがコピーされるので、そのディレクトリに移動します
 
 ```console
-cd lambda-cdcd-hands-on
+cd lambda-cicd-hands-on
 ```
 
 試しに、AWS上の CodeCommit に追加するファイルを作成します
@@ -121,7 +132,7 @@ Cloud9 で 作成されたファイルに追記してみましょう
 
 ```markdown
 # test
-Lambda の CI/CD を作って見ましょう。
+ちゃんとpushができるかテスト。
 ```
 
 git のステージエリアにファイルを追加します
@@ -163,20 +174,22 @@ git push
 
 AWS コンソールで CodeCommit を開いて、ファイルが追加されていることを確認しましょう
 
-
-
-### ユーザ設定
-
-
-```console
-git config --global user.name <USER_NAME>
-git config --global user.email <USER_EMAIL>
-
-```
-
 ## AWS SAM の準備
 
 Duration: 0:05:00
+
+Cloud9 には SAM CLI がプリインストールされているので、特に作業は必要ありません。
+
+Cloud9 のコンソールで以下のコマンドを実行し確認してみましょう。
+
+```console
+sam --version
+```
+
+レスポンス
+```console
+SAM CLI, version 1.57.0
+```
 
 ## AWS CodeBuild の準備
 
