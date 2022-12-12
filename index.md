@@ -748,8 +748,25 @@ Duration: 0:05:00
   - sam-app
   - sam-app-dev
   - sam-app-prd
-- S3 バケットを削除
+- S3 で```aws-sam-cli-managed-default-samclisourcebucket```から始まるバケットを「空にする」
+- CloudFormation で以下のスタックを削除
+  - aws-sam-cli-managed-default
+- Cloud9 で作成した環境「lambda-cicd-hands-on」を削除
+- CodePipelineを削除
+  - lambda-hands-on-dev
+  - lambda-hands-on-prd
+- CodeBuild のプロジェクトを削除
+  - lambda-cicd-hands-on
+- CodeCommit のリポジトリを削除
+  - lambda-cicd-hands-on
 - IAMもPipeline で作ったやつは残ってるはずなので、削除
+  - ```codebuild-lambda-cicd-hands-on-service-role```を削除
+  - AWSCodePipelineServiceRole-ap-northeast-1-prd
+  - AWSCodePipelineServiceRole-ap-northeast-1-dev
+  - cwe-role-ap-northeast-1-lambda-cicd-hands-on-dev
+  - cwe-role-ap-northeast-1-lambda-cicd-hands-on-prd
+- CloudWatch のロググループを削除
+  - cwe-role-ap-northeast-1-lambda-cicd-hands-on-dev
 
 <aside class="negative">
 ここは、もう一回確認
