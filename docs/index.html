@@ -128,6 +128,11 @@
 <pre>Cloning into &#39;lambda-cicd-hands-on&#39;...
 warning: You appear to have cloned an empty repository.
 </pre>
+<p>git のユーザを指定します。</p>
+<pre>git config --global user.name &#34;Your Name&#34;
+git config --global user.email you@example.com
+</pre>
+<p>上記を自分の名前とメールアドレスに書き換えて実行してください</p>
 <p>空のディレクトリがコピーされるので、そのディレクトリに移動します</p>
 <pre>cd lambda-cicd-hands-on
 </pre>
@@ -549,33 +554,50 @@ git push
 <p>しばらく待つと、パイプラインが動き出します。</p>
 <p>CodeBuild をクリックして、詳細を確認してみましょう。</p>
 <p class="image-container"><img alt="11" src="img/4bbe271cab5a39.png"></p>
-<aside class="warning"><p> ビルドされたLambdaをに Function URLからアクセスする手順を追加 </p>
-</aside>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="Lambda にアクセス" duration="5">
-        <p>開発環境様にデプロイした Lambda にアクセスしてみよう。</p>
+        <p>ここまで作成したリソースはこの様な形です。</p>
+<p class="image-container"><img alt="12" src="img/2b03d11de4962577.png"></p>
+<p>開発環境様にデプロイした Lambda にアクセスしてみよう。</p>
+<p>AWS コンソールで Lambda を開きます</p>
+<p><code>hello-lambda-dev</code> が先ほど CodeBuild からデプロイされた Lambda 関数です。</p>
+<p class="image-container"><img alt="12" src="img/4d2db03f0f4e41a8.png"></p>
+<p>「設定」タブの中から、「関数 URL」を開いて、エンドポイントにブラウザからアクセスしてみましょう。</p>
+<p class="image-container"><img alt="12" src="img/8956618c93682b3c.png"></p>
+<p>ブラウザで、以下のテキストが表示されます。</p>
+<pre>Hello, Lambda!
+</pre>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="複数環境の構築" duration="5">
-        <p>次に、本番環境用のリソースを作成していきましょう。</p>
+        <p>次に、本番環境用のリソースを作成していきましょう。 <img alt="13" src="img/e66d18579db58b79.png"></p>
 <p>CodeCommit に本番環境ブランチを作成するため、Cloud9 に戻って、以下のコマンドを作成します。</p>
 <pre>git branch PRODUCTION
 </pre>
 <p>新しく作成したブランチに checkout します</p>
 <pre>git checkout PRODUCTION
 </pre>
+<p>レスポンス</p>
+<pre>Switched to branch &#39;PRODUCTION&#39;
+</pre>
 <p>CodeCommit に PRODUCTION ブランチを新規に追加します</p>
 <pre>git push --set-upstream origin PRODUCTION
 </pre>
+<p>レスポンス</p>
+<pre>To codecommit::ap-northeast-1://lambda-cicd-hands-on
+ * [new branch]      PRODUCTION -&gt; PRODUCTION
+branch &#39;PRODUCTION&#39; set up to track &#39;origin/PRODUCTION&#39;.
+</pre>
 <h2 is-upgraded>CodePipeline をもう一つ作成します。</h2>
 <p>本番環境用のパイプラインを作成します。</p>
+<p>AWS コンソールから、CodePipeline を開きます。 <img alt="13" src="img/a00990a7a086d515.png"></p>
 <h2 is-upgraded>Step 1 パイプラインの設定を選択する</h2>
-<p>開発環境用のパイプラインだとわかる様に、末尾に<code>-prd</code>を付けます。</p>
+<p><img alt="13" src="img/21d666dff2138b9.png"> 開発環境用のパイプラインだとわかる様に、末尾に<code>-prd</code>を付けます。</p>
 <p>パイプライン名に以下をコピー。</p>
 <pre>lambda-hands-on-prd
 </pre>
@@ -583,6 +605,7 @@ git push
 <pre>AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-prd
 </pre>
 <h2 is-upgraded>Step 2 ソースステージを追加する</h2>
+<p class="image-container"><img alt="13" src="img/f5fdd57c2fccffaa.png"></p>
 <table>
 <tr><td colspan="2" rowspan="1"></td><td colspan="1" rowspan="1"></td></tr>
 <tr><td colspan="1" rowspan="1"><p>ソースプロバイダー</p>
@@ -596,6 +619,7 @@ git push
 </td></tr>
 </table>
 <h2 is-upgraded>Step 3 ビルドステージを追加する</h2>
+<p class="image-container"><img alt="13" src="img/7bcca6892c1bb3b0.png"></p>
 <table>
 <tr><td colspan="2" rowspan="1"></td><td colspan="1" rowspan="1"></td></tr>
 <tr><td colspan="1" rowspan="1"><p>プロバイダーを構築する</p>
@@ -625,17 +649,77 @@ git push
 </td></tr>
 </table>
 <h2 is-upgraded>Step 4 デプロイステージを追加する</h2>
+<p class="image-container"><img alt="13" src="img/e6ffce6a731ed1b5.png"></p>
 <p>スキップします。</p>
 <h2 is-upgraded>Step 5 レビュー</h2>
 <p>内容を確認して、「パイプラインを作成する」をクリック。</p>
-<p>CodePipeline に本番環境用のパイプラインを作成します</p>
-<p>AWS コンソールから、プルリクエストを作成します</p>
-<p>AWS コンソールから、プルリクエストをマージします</p>
-<aside class="warning"><p> ビルドされた本番用のLambdaを Function URLからアクセスする手順を追加 </p>
-</aside>
-<h2 is-upgraded>featureブランチを作って、開発環境にマージ</h2>
-<aside class="warning"><p> メッセージ部分を変更するfeatureブランチを作成し、master ブランチにマージして、開発と本番で違いを確認する </p>
-</aside>
+<p class="image-container"><img alt="13" src="img/a80bb272e156d127.png"></p>
+<p>本番用のパイプラインが動き始めます。</p>
+<h2 is-upgraded>本番用 Lambda にアクセス</h2>
+<p>先ほどと同様に、Lambda にアクセスしてみましょう。</p>
+<p><code>hello-lambda-prd</code> という名前の関数がデプロイされています。</p>
+<p class="image-container"><img alt="13" src="img/c6153ea89c4b985f.png"></p>
+<p>これで、上記の様な構成が構築できました。</p>
+<p>この段階では、開発環境と本番環境は全く同じ内容の Lambda がデプロイされています。</p>
+<p>次の章では、開発環境用のものにだけ変更し、２つの環境の違いを確認してみましょう。</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="featureブランチを作って、開発環境にマージ" duration="0">
+        <p>feature ブランチを新たに作成し、これを開発用の master ブランチにマージします。</p>
+<p>CodeCommit がマージされたイベントを CodePipeline が拾って、CodeBuild プロジェクトを自動で動かしてくれます。</p>
+<p>Cloud9 に戻ります。</p>
+<p>master ブランチに移動します</p>
+<pre>git checkout master 
+</pre>
+<p>feature/text-edit ブランチを作成します。</p>
+<pre>git branch feature/text-edit
+</pre>
+<p>feature/text-edit ブランチに移動します。</p>
+<pre>git checkout feature/text-edit
+</pre>
+<p>レスポンス</p>
+<pre>Switched to branch &#39;feature/text-edit&#39;
+</pre>
+<p>Cloud9で <code>hello-lambda.js</code> ファイルを編集します。</p>
+<p>message の内容を変更してみましょう。</p>
+<pre><code language="language-javascript" class="language-javascript">exports.helloLambdaHandler = async () =&gt; {
+    const message = &#39;Hello, dev Lambda!&#39;;
+
+    console.info(`${message}`);
+    
+    return message;
+}
+</code></pre>
+<p>編集をしたら保存します。</p>
+<p>これを、CodeCommit 側に push します。</p>
+<pre>git add .
+git commit -m &#34;テキスト修正&#34;
+
+</pre>
+<p>以下のコマンドで、feature/text-edit ブランチを CodeCommit 側に作成します。</p>
+<pre>git push --set-upstream origin feature/text-edit
+</pre>
+<h2 is-upgraded>プルリクエストの作成</h2>
+<p>AWS コンソールで CodeCommit から プルリクエストを作成してみましょう。</p>
+<p>「プルリクエストの作成」を押下</p>
+<p class="image-container"><img alt="14" src="img/dd65ff2c1bdec65.png"></p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>ターゲット</p>
+</td><td colspan="1" rowspan="1"><p>ソース</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>master</p>
+</td><td colspan="1" rowspan="1"><p>feature/text-edit</p>
+</td></tr>
+</table>
+<p>タイトルを入力</p>
+<pre>テキスト修正
+</pre>
+<p>変更部分が表示されます。</p>
+<p>右下の「プルリクエストの作成」を押下。 <img alt="14" src="img/38ecba7e102a3816.png"> 「マージ」を押下 <img alt="14" src="img/935ab4ede662aedc.png"> 「プルリクエストのマージ」を押下 <img alt="14" src="img/7d26f8c0822dbfec.png"><code>lambda-hands-on-dev</code>　のパイプラインだけが動き始めます。</p>
+<p>###　Lambda の比較をしてみましょう</p>
+<p><code>lambda-hands-on-dev</code> と <code>lambda-hands-on-prd</code> をそれぞれ開いて、エンドポイントの違いを見てみましょう。</p>
 
 
       </google-codelab-step>
@@ -673,6 +757,10 @@ git push
 <li>AWSCodePipelineServiceRole-ap-northeast-1-dev</li>
 <li>cwe-role-ap-northeast-1-lambda-cicd-hands-on-dev</li>
 <li>cwe-role-ap-northeast-1-lambda-cicd-hands-on-prd</li>
+</ul>
+</li>
+<li>IAM Policy <ul>
+<li>CodeBuildBasePolicy-lambda-cicd-hands-on-ap-northeast-1</li>
 </ul>
 </li>
 <li>CloudWatch のロググループを削除 <ul>

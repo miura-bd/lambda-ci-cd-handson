@@ -144,14 +144,14 @@ Cloning into 'lambda-cicd-hands-on'...
 warning: You appear to have cloned an empty repository.
 ```
 
-<!-- git のユーザを指定します。
+git のユーザを指定します。
 
 ```console
 git config --global user.name "Your Name"
 git config --global user.email you@example.com
 ```
 
-上記を自分の名前とメールアドレスに書き換えて実行してください -->
+上記を自分の名前とメールアドレスに書き換えて実行してください
 
 
 空のディレクトリがコピーされるので、そのディレクトリに移動します
@@ -715,22 +715,38 @@ CodeBuild をクリックして、詳細を確認してみましょう。
 
 ![11](img/lamda-11-6.png)
 
-<aside class="negative">
-ビルドされたLambdaをに Function URLからアクセスする手順を追加
-</aside>
-
 ## Lambda にアクセス
 
 Duration: 0:05:00
 
+ここまで作成したリソースはこの様な形です。
+
+![12](img/lamda-12-1.png)
+
 開発環境様にデプロイした Lambda にアクセスしてみよう。
+
+AWS コンソールで Lambda を開きます
+
+```hello-lambda-dev``` が先ほど CodeBuild からデプロイされた Lambda 関数です。
+
+![12](img/lamda-12-2.png)
+
+「設定」タブの中から、「関数 URL」を開いて、エンドポイントにブラウザからアクセスしてみましょう。
+
+![12](img/lamda-12-3.png)
+
+ブラウザで、以下のテキストが表示されます。
+
+```console
+Hello, Lambda!
+```
 
 ## 複数環境の構築
 
 Duration: 0:05:00
 
 次に、本番環境用のリソースを作成していきましょう。
-
+![13](img/lamda-13-1.png)
 
 CodeCommit に本番環境ブランチを作成するため、Cloud9 に戻って、以下のコマンドを作成します。
 
@@ -744,19 +760,36 @@ git branch PRODUCTION
 git checkout PRODUCTION
 ```
 
+レスポンス
+
+```console
+Switched to branch 'PRODUCTION'
+```
+
 CodeCommit に PRODUCTION ブランチを新規に追加します
 
 ```console
 git push --set-upstream origin PRODUCTION
 ```
 
+レスポンス
+
+```console
+To codecommit::ap-northeast-1://lambda-cicd-hands-on
+ * [new branch]      PRODUCTION -> PRODUCTION
+branch 'PRODUCTION' set up to track 'origin/PRODUCTION'.
+```
+
 ### CodePipeline をもう一つ作成します。
 
 本番環境用のパイプラインを作成します。
 
+AWS コンソールから、CodePipeline を開きます。
+![13](img/lamda-13-2.png)
+
 ### Step 1 パイプラインの設定を選択する
 
-
+![13](img/lamda-13-3.png)
 開発環境用のパイプラインだとわかる様に、末尾に```-prd```を付けます。
 
 パイプライン名に以下をコピー。
@@ -773,6 +806,8 @@ AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-prd
 
 ### Step 2 ソースステージを追加する
 
+![13](img/lamda-13-4.png)
+
 | | |
 |:-|:-|
 | ソースプロバイダー | AWS CodeCommit |
@@ -781,6 +816,8 @@ AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-prd
 
 
 ### Step 3 ビルドステージを追加する
+
+![13](img/lamda-13-5.png)
 
 | | |
 |:-|:-|
@@ -799,27 +836,130 @@ AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-prd
 
 ### Step 4 デプロイステージを追加する
 
+![13](img/lamda-13-6.png)
+
 スキップします。
 
 ### Step 5 レビュー
 
 内容を確認して、「パイプラインを作成する」をクリック。
 
-CodePipeline に本番環境用のパイプラインを作成します
+![13](img/lamda-13-7.png)
 
-AWS コンソールから、プルリクエストを作成します
+本番用のパイプラインが動き始めます。
 
-AWS コンソールから、プルリクエストをマージします
+### 本番用 Lambda にアクセス
 
-<aside class="negative">
-ビルドされた本番用のLambdaを Function URLからアクセスする手順を追加
-</aside>
+先ほどと同様に、Lambda にアクセスしてみましょう。
 
-### featureブランチを作って、開発環境にマージ
+```hello-lambda-prd``` という名前の関数がデプロイされています。
 
-<aside class="negative">
-メッセージ部分を変更するfeatureブランチを作成し、master ブランチにマージして、開発と本番で違いを確認する
-</aside>
+![13](img/lamda-13-8.png)
+
+これで、上記の様な構成が構築できました。
+
+この段階では、開発環境と本番環境は全く同じ内容の Lambda がデプロイされています。
+
+次の章では、開発環境用のものにだけ変更し、２つの環境の違いを確認してみましょう。
+
+
+## featureブランチを作って、開発環境にマージ
+
+
+feature ブランチを新たに作成し、これを開発用の master ブランチにマージします。
+
+CodeCommit がマージされたイベントを CodePipeline が拾って、CodeBuild プロジェクトを自動で動かしてくれます。
+
+Cloud9 に戻ります。
+
+master ブランチに移動します
+
+```console
+git checkout master 
+```
+
+feature/text-edit ブランチを作成します。
+
+```console
+git branch feature/text-edit
+```
+
+feature/text-edit ブランチに移動します。
+
+```console
+git checkout feature/text-edit
+```
+
+レスポンス
+
+```console
+Switched to branch 'feature/text-edit'
+```
+Cloud9で ```hello-lambda.js``` ファイルを編集します。
+
+message の内容を変更してみましょう。
+
+```javascript
+exports.helloLambdaHandler = async () => {
+    const message = 'Hello, dev Lambda!';
+
+    console.info(`${message}`);
+    
+    return message;
+}
+```
+
+編集をしたら保存します。
+
+これを、CodeCommit 側に push します。
+
+```console
+git add .
+git commit -m "テキスト修正”
+
+```
+
+以下のコマンドで、feature/text-edit ブランチを CodeCommit 側に作成します。
+
+```console
+git push --set-upstream origin feature/text-edit
+```
+
+### プルリクエストの作成
+
+AWS コンソールで CodeCommit から プルリクエストを作成してみましょう。
+
+「プルリクエストの作成」を押下
+
+![14](img/lamda-14-1.png)
+
+| ターゲット | ソース |
+|:-|:-|
+| master | feature/text-edit |
+
+タイトルを入力
+
+```console
+テキスト修正
+```
+
+変更部分が表示されます。
+
+右下の「プルリクエストの作成」を押下。
+![14](img/lamda-14-2.png)
+「マージ」を押下
+![14](img/lamda-14-3.png)
+「プルリクエストのマージ」を押下
+![14](img/lamda-14-4.png)
+```lambda-hands-on-dev```　のパイプラインだけが動き始めます。
+
+###　Lambda の比較をしてみましょう
+
+```lambda-hands-on-dev``` と ```lambda-hands-on-prd``` をそれぞれ開いて、エンドポイントの違いを見てみましょう。
+
+これで、今回のハンズオンは以上です。
+
+次の章で、今回作成したリソースを削除しましょう。
 
 ## お掃除
 
@@ -846,6 +986,8 @@ Duration: 0:05:00
   - AWSCodePipelineServiceRole-ap-northeast-1-dev
   - cwe-role-ap-northeast-1-lambda-cicd-hands-on-dev
   - cwe-role-ap-northeast-1-lambda-cicd-hands-on-prd
+- IAM Policy
+  - CodeBuildBasePolicy-lambda-cicd-hands-on-ap-northeast-1
 - CloudWatch のロググループを削除
   - cwe-role-ap-northeast-1-lambda-cicd-hands-on-dev
   - /aws/lambda/sam-app-helloLambdaFunction から始まる
