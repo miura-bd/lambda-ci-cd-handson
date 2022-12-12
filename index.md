@@ -48,6 +48,11 @@ Duration: 0:05:00
   - 開発環境用と本番環境用の2つのパイプラインを作成します
   - 1つの CodeBuild プロジェクトを使用して、CodePipeline で環境変数を上書きすることで、異なる環境のデプロイを実現します
 
+### このハンズオンの諸注意
+
+- 東京リージョン(ap-northeast-1)を利用します
+- 指定がない限りはデフォルトのままで進めます。
+
 ## CodeCommit の準備
 
 Duration: 0:05:00
@@ -78,7 +83,7 @@ Duration: 0:05:00
 
 「Create environment」をクリック
 
-以下の名前を入力
+Nameを以下で作成
 
 ```console
 lambda-cicd-hands-on
@@ -90,9 +95,7 @@ lambda-cicd-hands-on
 
 作成した CodeCommit リポジトリに対して、ファイルを追加してみましょう。
 
-CodeCommit でHTTPS(GRC)をコピー
-
-Cloud9 の画面下部にのターミナルにコピーして実行
+CodeCommit で、コピーしたHTTPS(GRC)を、Cloud9 の画面下部にのターミナルにコピーして実行
 
 ```console
 git clone codecommit::ap-northeast-1://lambda-cicd-hands-on
@@ -105,14 +108,14 @@ Cloning into 'lambda-cicd-hands-on'...
 warning: You appear to have cloned an empty repository.
 ```
 
-git のユーザを指定します。
+<!-- git のユーザを指定します。
 
 ```console
 git config --global user.name "Your Name"
 git config --global user.email you@example.com
 ```
 
-上記を自分の名前とメールアドレスに書き換えて実行してください
+上記を自分の名前とメールアドレスに書き換えて実行してください -->
 
 
 空のディレクトリがコピーされるので、そのディレクトリに移動します
@@ -127,7 +130,7 @@ cd lambda-cicd-hands-on
 touch test.md
 ```
 
-Cloud9 で 作成されたファイルに追記してみましょう
+Cloud9で ```test.md``` ファイルを編集し、以下の内容をコピーして保存してください。
 
 ```markdown
 # test
@@ -179,27 +182,17 @@ AWS コンソールで CodeCommit を開いて、ファイルが追加されて�
 Cloud9 に戻って、
 Lambda 関数を定義するファイルを作成します
 
-CodeCommi と関連づけられたディレクトリにいることを改めて確認してください
+CodeCommit と関連づけられたディレクトリへに移動します
 
-（master）とブランチ名がコマンドラインに表示されています。
+```console
+ cd ~/environment/lambda-cicd-hands-on/
+```
+
+Gitと紐づいていると、ブランチ名（master) が表示される様になります。
 
 ```console
  (master) $ 
 ```
-
-念のため、ディレクトリの現在地を確認します。
-
-```console
-pwd
-```
-
-レスポンス
-
-```console
-/home/ec2-user/environment/lambda-cicd-hands-on
-```
-
-もし、違っていたら、Cloud9 上でのカレントディレクトリを確認してください。
 
 ### Lambda 関数の定義
 
@@ -262,7 +255,7 @@ touch template.yaml
 
 ### YAML の内容
 
-以下の内容を template.yaml にコピー
+Cloud9で ```template.yaml``` ファイルを編集し、以下の内容をコピーして保存してください。
 
 ```yaml
 AWSTemplateFormatVersion: 2010-09-09
@@ -286,7 +279,7 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
 Outputs:
-　HelloLambdaFunction:
+  HelloLambdaFunction:
     Description: "Hello Lambda Function ARN"
     Value: !GetAtt helloLambdaFunction.Arn
   HelloLambdaFunctionUrl:
@@ -349,7 +342,7 @@ sam deploy --guided
 1箇所だけ、Yを選択するところがあります。内容を確認しながら進めてください。
 </aside>
 
-Function URL の部分だけ「Y」を選択しますが、
+```helloLambdaFunction Function Url may not have authorization defined, Is this okay? [y/N]```でのみ、「Y」を選択しますが、
 その他は、デフォルトを使いますので、何も入力せず進めてください。
 
 ```console
@@ -449,6 +442,7 @@ Outputs:
 
 <aside class="negative">
 この差分がちょっとわかりづらいかも？？
+git diff 追加してみますか
 </aside>
 
 ### buildspec.yml の作成
@@ -540,7 +534,7 @@ S3のコンソールから```aws-sam-cli-managed-default-samclisourcebucket```�
 
 | 名前 | 値 | タイプ |
 |:-|:-|:-|
-| S3_BUCKET | aws-sam-cli-managed-default-samclisourcebucket-8uomdf4v5spw |プレーンテキスト |
+| S3_BUCKET | **上記検索結果** |プレーンテキスト |
 | STACKNAME | sam-app | プレーンテキスト |
 | REGION | ap-northeast-1 | プレーンテキスト |
 | ENV | manual | プレーンテキスト |
@@ -574,7 +568,7 @@ AWS コンソールから、IAMを開いて、左のペインから「ロール�
 
 ### ビルドの開始
 
-CodeBuild を AWS コンソールから実行をしてみましょう。
+AWS コンソールから、CodeBuild を開き、「ビルドを開始」ボタンを押下して実行をしてみましょう。
 
 「フェーズ詳細」タブを開くと、進捗がわかります。
 
@@ -599,6 +593,8 @@ AWS コンソールで CodePipeline を開きます。
 ```console
 lambda-hands-on-dev
 ```
+
+ロール名は自動的に以下となります。
 
 ```console
 AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-dev
@@ -644,7 +640,9 @@ AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-dev
 CodeBuild をクリックして、詳細を確認してみましょう。
 
 
-
+<aside class="negative">
+ビルドされたLambdaをに Function URLからアクセスする手順を追加
+</aside>
 
 ## 複数環境の構築
 
@@ -677,14 +675,21 @@ git push --set-upstream origin PRODUCTION
 
 ### Step 1 パイプラインの設定を選択する
 
+
+開発環境用のパイプラインだとわかる様に、末尾に```-prd```を付けます。
+
 パイプライン名に以下をコピー。
 
 ```console
 lambda-hands-on-prd
 ```
 
+ロール名は自動的に以下となります。
 
-開発環境用のパイプラインだとわかる様に、末尾に```-prd```を付けます。
+```console
+AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-prd
+```
+
 ### Step 2 ソースステージを追加する
 
 | | |
@@ -725,6 +730,27 @@ AWS コンソールから、プルリクエストを作成します
 
 AWS コンソールから、プルリクエストをマージします
 
+<aside class="negative">
+ビルドされた本番用のLambdaを Function URLからアクセスする手順を追加
+</aside>
+
+### featureブランチを作って、開発環境にマージ
+
+<aside class="negative">
+メッセージ部分を変更するfeatureブランチを作成し、master ブランチにマージして、開発と本番で違いを確認する
+</aside>
+
 ## お掃除
 
 Duration: 0:05:00
+
+- CloudFormation で、以下のスタックを削除
+  - sam-app
+  - sam-app-dev
+  - sam-app-prd
+- S3 バケットを削除
+- IAMもPipeline で作ったやつは残ってるはずなので、削除
+
+<aside class="negative">
+ここは、もう一回確認
+</aside>

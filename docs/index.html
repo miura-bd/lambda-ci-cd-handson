@@ -72,6 +72,11 @@
 </ul>
 </li>
 </ul>
+<h2 is-upgraded>このハンズオンの諸注意</h2>
+<ul>
+<li>東京リージョン(ap-northeast-1)を利用します</li>
+<li>指定がない限りはデフォルトのままで進めます。</li>
+</ul>
 
 
       </google-codelab-step>
@@ -93,7 +98,7 @@
     
       <google-codelab-step label="Cloud9 の作成" duration="5">
         <p>「Create environment」をクリック</p>
-<p>以下の名前を入力</p>
+<p>Nameを以下で作成</p>
 <pre>lambda-cicd-hands-on
 </pre>
 
@@ -103,26 +108,20 @@
       <google-codelab-step label="Cloud9 と CodeCommit の接続" duration="0">
         <h2 is-upgraded>CodeCommit へのファーストコミットの作成</h2>
 <p>作成した CodeCommit リポジトリに対して、ファイルを追加してみましょう。</p>
-<p>CodeCommit でHTTPS(GRC)をコピー</p>
-<p>Cloud9 の画面下部にのターミナルにコピーして実行</p>
+<p>CodeCommit で、コピーしたHTTPS(GRC)を、Cloud9 の画面下部にのターミナルにコピーして実行</p>
 <pre>git clone codecommit::ap-northeast-1://lambda-cicd-hands-on
 </pre>
 <p>レスポンス</p>
 <pre>Cloning into &#39;lambda-cicd-hands-on&#39;...
 warning: You appear to have cloned an empty repository.
 </pre>
-<p>git のユーザを指定します。</p>
-<pre>git config --global user.name &#34;Your Name&#34;
-git config --global user.email you@example.com
-</pre>
-<p>上記を自分の名前とメールアドレスに書き換えて実行してください</p>
 <p>空のディレクトリがコピーされるので、そのディレクトリに移動します</p>
 <pre>cd lambda-cicd-hands-on
 </pre>
 <p>試しに、AWS上の CodeCommit に追加するファイルを作成します</p>
 <pre>touch test.md
 </pre>
-<p>Cloud9 で 作成されたファイルに追記してみましょう</p>
+<p>Cloud9で <code>test.md</code> ファイルを編集し、以下の内容をコピーして保存してください。</p>
 <pre><code language="language-markdown" class="language-markdown"># test
 ちゃんとpushができるかテスト。
 </code></pre>
@@ -155,17 +154,12 @@ Changes to be committed:
     
       <google-codelab-step label="Lambda の準備" duration="0">
         <p>Cloud9 に戻って、 Lambda 関数を定義するファイルを作成します</p>
-<p>CodeCommi と関連づけられたディレクトリにいることを改めて確認してください</p>
-<p>（master）とブランチ名がコマンドラインに表示されています。</p>
+<p>CodeCommit と関連づけられたディレクトリへに移動します</p>
+<pre> cd ~/environment/lambda-cicd-hands-on/
+</pre>
+<p>Gitと紐づいていると、ブランチ名（master) が表示される様になります。</p>
 <pre> (master) $ 
 </pre>
-<p>念のため、ディレクトリの現在地を確認します。</p>
-<pre>pwd
-</pre>
-<p>レスポンス</p>
-<pre>/home/ec2-user/environment/lambda-cicd-hands-on
-</pre>
-<p>もし、違っていたら、Cloud9 上でのカレントディレクトリを確認してください。</p>
 <h2 is-upgraded>Lambda 関数の定義</h2>
 <p>今回は node.js で定義された Lambda 関数を作成します。</p>
 <p>以下のコマンドから、JavaScript ファイルを作成してください</p>
@@ -202,7 +196,7 @@ git push
 <pre>touch template.yaml
 </pre>
 <h2 is-upgraded>YAML の内容</h2>
-<p>以下の内容を template.yaml にコピー</p>
+<p>Cloud9で <code>template.yaml</code> ファイルを編集し、以下の内容をコピーして保存してください。</p>
 <pre><code language="language-yaml" class="language-yaml">AWSTemplateFormatVersion: 2010-09-09
 Description: &gt;-
   lambda-cicd-hands-on
@@ -224,7 +218,7 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
 Outputs:
-　HelloLambdaFunction:
+  HelloLambdaFunction:
     Description: &#34;Hello Lambda Function ARN&#34;
     Value: !GetAtt helloLambdaFunction.Arn
   HelloLambdaFunctionUrl:
@@ -268,7 +262,7 @@ git push
 <p>以下、対話形式でのプロンプトを通して、初期設定を行い、<code>samconfig.toml</code> ファイルを作成します。</p>
 <aside class="warning"><p> 1箇所だけ、Yを選択するところがあります。内容を確認しながら進めてください。 </p>
 </aside>
-<p>Function URL の部分だけ「Y」を選択しますが、 その他は、デフォルトを使いますので、何も入力せず進めてください。</p>
+<p><code>helloLambdaFunction Function Url may not have authorization defined, Is this okay? [y/N]</code>でのみ、「Y」を選択しますが、 その他は、デフォルトを使いますので、何も入力せず進めてください。</p>
 <pre>Stack Name [sam-app]: 
 AWS Region [ap-northeast-1]: 
 #Shows you resources changes to be deployed and require a &#39;Y&#39; to initiate deploy
@@ -344,7 +338,7 @@ Outputs:
     Description: &#34;Function URLs endpoint&#34;
     Value: !GetAtt helloLambdaFunctionUrl.FunctionUrl
 </code></pre>
-<aside class="warning"><p> この差分がちょっとわかりづらいかも？？ </p>
+<aside class="warning"><p> この差分がちょっとわかりづらいかも？？ git diff 追加してみますか </p>
 </aside>
 <h2 is-upgraded>buildspec.yml の作成</h2>
 <p>CodeBuild での実行を定義する buildspec.yml ファイルを作成します</p>
@@ -425,7 +419,7 @@ git push
 </td><td colspan="1" rowspan="1"><p>タイプ</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p>S3_BUCKET</p>
-</td><td colspan="1" rowspan="1"><p>aws-sam-cli-managed-default-samclisourcebucket-8uomdf4v5spw</p>
+</td><td colspan="1" rowspan="1"><p><strong>上記検索結果</strong></p>
 </td><td colspan="1" rowspan="1"><p>プレーンテキスト</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p>STACKNAME</p>
@@ -458,7 +452,7 @@ git push
 </ul>
 <p>アタッチ後、IAMの画面は以下の様になります。</p>
 <h2 is-upgraded>ビルドの開始</h2>
-<p>CodeBuild を AWS コンソールから実行をしてみましょう。</p>
+<p>AWS コンソールから、CodeBuild を開き、「ビルドを開始」ボタンを押下して実行をしてみましょう。</p>
 <p>「フェーズ詳細」タブを開くと、進捗がわかります。</p>
 <p>ステータスが成功になったら、完了です。</p>
 
@@ -475,6 +469,7 @@ git push
 <p>開発環境用のパイプラインだとわかる様に、末尾に<code>-dev</code>を付けます。</p>
 <pre>lambda-hands-on-dev
 </pre>
+<p>ロール名は自動的に以下となります。</p>
 <pre>AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-dev
 </pre>
 <h2 is-upgraded>Step 2 ソースステージを追加する</h2>
@@ -526,6 +521,8 @@ git push
 <h2 is-upgraded>パイプラインの実行</h2>
 <p>しばらく待つと、パイプラインが動き出します。</p>
 <p>CodeBuild をクリックして、詳細を確認してみましょう。</p>
+<aside class="warning"><p> ビルドされたLambdaをに Function URLからアクセスする手順を追加 </p>
+</aside>
 
 
       </google-codelab-step>
@@ -544,10 +541,13 @@ git push
 <h2 is-upgraded>CodePipeline をもう一つ作成します。</h2>
 <p>本番環境用のパイプラインを作成します。</p>
 <h2 is-upgraded>Step 1 パイプラインの設定を選択する</h2>
+<p>開発環境用のパイプラインだとわかる様に、末尾に<code>-prd</code>を付けます。</p>
 <p>パイプライン名に以下をコピー。</p>
 <pre>lambda-hands-on-prd
 </pre>
-<p>開発環境用のパイプラインだとわかる様に、末尾に<code>-prd</code>を付けます。</p>
+<p>ロール名は自動的に以下となります。</p>
+<pre>AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-prd
+</pre>
 <h2 is-upgraded>Step 2 ソースステージを追加する</h2>
 <table>
 <tr><td colspan="2" rowspan="1"></td><td colspan="1" rowspan="1"></td></tr>
@@ -597,12 +597,29 @@ git push
 <p>CodePipeline に本番環境用のパイプラインを作成します</p>
 <p>AWS コンソールから、プルリクエストを作成します</p>
 <p>AWS コンソールから、プルリクエストをマージします</p>
+<aside class="warning"><p> ビルドされた本番用のLambdaを Function URLからアクセスする手順を追加 </p>
+</aside>
+<h2 is-upgraded>featureブランチを作って、開発環境にマージ</h2>
+<aside class="warning"><p> メッセージ部分を変更するfeatureブランチを作成し、master ブランチにマージして、開発と本番で違いを確認する </p>
+</aside>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="お掃除" duration="5">
-        
+        <ul>
+<li>CloudFormation で、以下のスタックを削除 <ul>
+<li>sam-app</li>
+<li>sam-app-dev</li>
+<li>sam-app-prd</li>
+</ul>
+</li>
+<li>S3 バケットを削除</li>
+<li>IAMもPipeline で作ったやつは残ってるはずなので、削除</li>
+</ul>
+<aside class="warning"><p> ここは、もう一回確認 </p>
+</aside>
+
 
       </google-codelab-step>
     
