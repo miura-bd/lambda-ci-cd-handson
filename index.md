@@ -58,11 +58,29 @@ Duration: 0:05:00
 Duration: 0:05:00
 ### リポジトリの作成（コンソールから実施）
 
+![03タイトル](img/lamda-03-1.png)
+
+AWS内で使用することができる Git リポジトリである、CodeCommit を作成します。
+ここにソースコードをおいて、管理をします。
+また、最後に複数環境を用意しますが、リポジトリのブランチを変えることで実現します。
+
+![03コンソールを開く](img/lamda-03-2.png)
+
+![03名前の](img/lamda-03-3.png)
+
+AWS コンソールからリポジトリを作成します。
+
+![03リポジトリの設定](img/lamda-03-4.png)
+
 リポジトリ名を以下で作成
 
 ```console
 lambda-cicd-hands-on
 ```
+
+![03接続方法](img/lamda-03-5.png)
+
+
 
 ### HTTPS(GRC)でクローンするコマンドをコピー
 
@@ -80,21 +98,39 @@ HTTPS(GRC) を使用するためには、python と git-remote-codecommit が必
 
 Duration: 0:05:00
 
+![04](img/lamda-04-1.png)
 
+AWS 上のIDEである「Cloud9」の環境を構築します。
+ここからファイルの編集や、Git操作を実施します
+
+![04](img/lamda-04-2.png)
+![04](img/lamda-04-3.png)
 「Create environment」をクリック
 
+![04](img/lamda-04-4.png)
 Nameを以下で作成
 
 ```console
 lambda-cicd-hands-on
 ```
 
+![04](img/lamda-04-5.png)
+
+他はデフォルトのまま、「Create」を押下
+
+![04](img/lamda-04-6.png)
+
+Openをクリックして、Cloud9を開いてみましょう。
+
 ## Cloud9 と CodeCommit の接続
 
 ### CodeCommit へのファーストコミットの作成
 
-作成した CodeCommit リポジトリに対して、ファイルを追加してみましょう。
+![05](img/lamda-05-1.png)
+作成した CodeCommit リポジトリに対して、Cloud9 からファイルを追加してみましょう。
 
+
+![05](img/lamda-05-2.png)
 CodeCommit で、コピーしたHTTPS(GRC)を、Cloud9 の画面下部にのターミナルにコピーして実行
 
 ```console
@@ -175,12 +211,15 @@ CodeCommit に追加します
 git push
 ```
 
+![05](img/lamda-05-3.png)
 AWS コンソールで CodeCommit を開いて、ファイルが追加されていることを確認しましょう
 
 ## Lambda の準備
 
 Cloud9 に戻って、
 Lambda 関数を定義するファイルを作成します
+
+![06](img/lamda-06-1.png)
 
 CodeCommit と関連づけられたディレクトリへに移動します
 
@@ -232,6 +271,7 @@ CodeCommit の画面で、ファイルが追加されていることを確認し
 ## AWS SAM の準備
 
 Duration: 0:05:00
+![07](img/lamda-07-1.png)
 
 Cloud9 には SAM CLI がプリインストールされているので、特に作業は必要ありません。
 
@@ -332,6 +372,8 @@ git push
 
 必要な初期設定と合わせて、Lambda関数をデプロイしてみましょう
 
+![08](img/lamda-08-1.png)
+
 ```console
 sam deploy --guided
 ```
@@ -389,6 +431,8 @@ git push
 ## AWS CodeBuild の準備
 
 Duration: 0:05:00
+
+![09](img/lamda-09-1.png)
 
 ### template.yaml の更新
 
@@ -470,7 +514,7 @@ phases:
 buildspec.yaml の中で＄から始まっているものは、CodeBuild プロジェクトの環境変数として、この後AWS コンソールから定義するものです。
 </aside>
 
-ここで定義したコマンドが、CodeBuild でビルドする時に実行されるコマンドなのですが、先ほどダメした、sam のコマンドが出てきません。
+ここで定義したコマンドが、CodeBuild でビルドする時に実行されるコマンドなのですが、先ほど試した、sam のコマンドが出てきません。
 
 それは、CodeBuild が実行時に使用するコンテナには、AWS SAM がインストールされていないためです。
 
@@ -486,19 +530,24 @@ git push
 
 ## AWS CodeBuild プロジェクトの作成
 
+![10](img/lamda-10-1.png)
 コンソールからの操作になります。
 
-プロジェクトの作成をクリックします
+![10](img/lamda-10-2.png)
+プロジェクトの作成をクリックします。
 
 ### プロジェクトの設定
+
+![10](img/lamda-10-3.png)
 
 プロジェクト名に以下の文字列をコピーします
 
 ```console
 lambda-cicd-hands-on
 ```
-
 ### ソース
+
+![10](img/lamda-10-4.png)
 
 ソースプロバイダで「CodeCommit」を選択
 
@@ -510,6 +559,7 @@ lambda-cicd-hands-on
 
 ### 環境
 
+![10](img/lamda-10-5.png)
 以下の様に設定します
 
 | | |
@@ -523,14 +573,16 @@ lambda-cicd-hands-on
 | サービスロール | 新しいサービルロール　|
 | ロール名　| そのまま　|
 
-#### 追加設定
+### 追加設定
 
 隠れている「追加設定」をクリックし、環境変数を4つ設定します
 
-「環境変数の追加」をクリックすると行を増やすことができます。
+![10](img/lamda-10-6.png)
 
 ここで、AWS SAM が作成した S3 Bucket 名を使用します。
-S3のコンソールから```aws-sam-cli-managed-default-samclisourcebucket```で検索し、バケット名をコピーしてください
+S3のコンソールを開いてください。
+
+```aws-sam-cli-managed-default-samclisourcebucket```で検索し、バケット名をコピーしてください
 
 | 名前 | 値 | タイプ |
 |:-|:-|:-|
@@ -539,15 +591,21 @@ S3のコンソールから```aws-sam-cli-managed-default-samclisourcebucket```�
 | REGION | ap-northeast-1 | プレーンテキスト |
 | ENV | manual | プレーンテキスト |
 
+### アーティファクト
+
+![10](img/lamda-10-7.png)
+
+バケット名のところに、同じものをコピーします。
+
 あとはそのままで大丈夫です。
 
 「ビルドプロジェクトを作成する」をクリックします。
 
 プロジェクトが正常に作成されると、自動的に画面が変わるので、それまで待ちます。
 
-完成したらビルドに必要なIAMを追加していきます。
-
 ### IAM Role にポリシーを追加
+
+IAM Role にポリシーを追加して行きます。
 
 先ほど、プロジェクトの作成に合わせて作成した IAM ロールに、必要な IAM ポリシー を追加していきます。
 
@@ -565,27 +623,36 @@ AWS コンソールから、IAMを開いて、左のペインから「ロール�
 
 アタッチ後、IAMの画面は以下の様になります。
 
+![10](img/lamda-10-8.png)
 
 ### ビルドの開始
 
+![10](img/lamda-10-9.png)
 AWS コンソールから、CodeBuild を開き、「ビルドを開始」ボタンを押下して実行をしてみましょう。
 
 「フェーズ詳細」タブを開くと、進捗がわかります。
+
+![10](img/lamda-10-10.png)
+![10](img/lamda-10-11.png)
 
 ステータスが成功になったら、完了です。
 
 ## CodePipeline の作成
 
-コンソールから作成
 
+コンソールから作業をします
+![11](img/lamda-11-1.png)
 AWS コンソールで CodePipeline を開きます。
 
+
+![11](img/lamda-11-2.png)
 「パイプラインの作成」をクリック
 
 まずは、開発環境用のパイプラインを作成します。
 
 ### Step 1 パイプラインの設定を選択する
 
+![11](img/lamda-11-3.png)
 パイプライン名に以下をコピー。
 
 開発環境用のパイプラインだとわかる様に、末尾に```-dev```を付けます。
@@ -602,6 +669,8 @@ AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-dev
 
 ### Step 2 ソースステージを追加する
 
+![11](img/lamda-11-4.png)
+
 | | |
 |:-|:-|
 | ソースプロバイダー | AWS CodeCommit |
@@ -609,6 +678,8 @@ AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-dev
 | ブランチ名 | master |
 
 ### Step 3 ビルドステージを追加する
+
+![11](img/lamda-11-7.png)
 
 | | |
 |:-|:-|
@@ -627,6 +698,9 @@ AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-dev
 
 ### Step 4 デプロイステージを追加する
 
+![11](img/lamda-11-5.png)
+
+
 スキップします。
 
 ### Step 5 レビュー
@@ -639,10 +713,17 @@ AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-dev
 
 CodeBuild をクリックして、詳細を確認してみましょう。
 
+![11](img/lamda-11-6.png)
 
 <aside class="negative">
 ビルドされたLambdaをに Function URLからアクセスする手順を追加
 </aside>
+
+## Lambda にアクセス
+
+Duration: 0:05:00
+
+開発環境様にデプロイした Lambda にアクセスしてみよう。
 
 ## 複数環境の構築
 

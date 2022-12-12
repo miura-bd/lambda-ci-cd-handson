@@ -83,9 +83,16 @@
     
       <google-codelab-step label="CodeCommit の準備" duration="5">
         <h2 is-upgraded>リポジトリの作成（コンソールから実施）</h2>
+<p class="image-container"><img alt="03タイトル" src="img/647aefbe2e624959.png"></p>
+<p>AWS内で使用することができる Git リポジトリである、CodeCommit を作成します。 ここにソースコードをおいて、管理をします。 また、最後に複数環境を用意しますが、リポジトリのブランチを変えることで実現します。</p>
+<p class="image-container"><img alt="03コンソールを開く" src="img/cf4499c665c5d108.png"></p>
+<p class="image-container"><img alt="03名前の" src="img/de8cc9d89d1f9b2a.png"></p>
+<p>AWS コンソールからリポジトリを作成します。</p>
+<p class="image-container"><img alt="03リポジトリの設定" src="img/c8052c879c2e355.png"></p>
 <p>リポジトリ名を以下で作成</p>
 <pre>lambda-cicd-hands-on
 </pre>
+<p class="image-container"><img alt="03接続方法" src="img/4619d7b931b7f799.png"></p>
 <h2 is-upgraded>HTTPS(GRC)でクローンするコマンドをコピー</h2>
 <p>また、後で使用します。</p>
 <pre>git clone codecommit::ap-northeast-1://lambda-cicd-hands-on
@@ -97,18 +104,24 @@
       </google-codelab-step>
     
       <google-codelab-step label="Cloud9 の作成" duration="5">
-        <p>「Create environment」をクリック</p>
-<p>Nameを以下で作成</p>
+        <p class="image-container"><img alt="04" src="img/631fb3ab0a1a2ada.png"></p>
+<p>AWS 上のIDEである「Cloud9」の環境を構築します。 ここからファイルの編集や、Git操作を実施します</p>
+<p><img alt="04" src="img/6ea9cc2a9cc272a2.png"><img alt="04" src="img/bdd581509ae4f2ce.png"> 「Create environment」をクリック</p>
+<p><img alt="04" src="img/550e9d0ccf5cf3a7.png"> Nameを以下で作成</p>
 <pre>lambda-cicd-hands-on
 </pre>
+<p class="image-container"><img alt="04" src="img/cec51418253b11f.png"></p>
+<p>他はデフォルトのまま、「Create」を押下</p>
+<p class="image-container"><img alt="04" src="img/fad0c373b3aab02a.png"></p>
+<p>Openをクリックして、Cloud9を開いてみましょう。</p>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="Cloud9 と CodeCommit の接続" duration="0">
         <h2 is-upgraded>CodeCommit へのファーストコミットの作成</h2>
-<p>作成した CodeCommit リポジトリに対して、ファイルを追加してみましょう。</p>
-<p>CodeCommit で、コピーしたHTTPS(GRC)を、Cloud9 の画面下部にのターミナルにコピーして実行</p>
+<p><img alt="05" src="img/571453ebf644f288.png"> 作成した CodeCommit リポジトリに対して、Cloud9 からファイルを追加してみましょう。</p>
+<p><img alt="05" src="img/5ec176ea6b49c23f.png"> CodeCommit で、コピーしたHTTPS(GRC)を、Cloud9 の画面下部にのターミナルにコピーして実行</p>
 <pre>git clone codecommit::ap-northeast-1://lambda-cicd-hands-on
 </pre>
 <p>レスポンス</p>
@@ -147,13 +160,14 @@ Changes to be committed:
 <p>CodeCommit に追加します</p>
 <pre>git push
 </pre>
-<p>AWS コンソールで CodeCommit を開いて、ファイルが追加されていることを確認しましょう</p>
+<p><img alt="05" src="img/5b6a529f1eb130eb.png"> AWS コンソールで CodeCommit を開いて、ファイルが追加されていることを確認しましょう</p>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="Lambda の準備" duration="0">
         <p>Cloud9 に戻って、 Lambda 関数を定義するファイルを作成します</p>
+<p class="image-container"><img alt="06" src="img/dc0ac32d0c4deb6.png"></p>
 <p>CodeCommit と関連づけられたディレクトリへに移動します</p>
 <pre> cd ~/environment/lambda-cicd-hands-on/
 </pre>
@@ -185,7 +199,8 @@ git push
       </google-codelab-step>
     
       <google-codelab-step label="AWS SAM の準備" duration="5">
-        <p>Cloud9 には SAM CLI がプリインストールされているので、特に作業は必要ありません。</p>
+        <p class="image-container"><img alt="07" src="img/6c297efc5e053056.png"></p>
+<p>Cloud9 には SAM CLI がプリインストールされているので、特に作業は必要ありません。</p>
 <p>Cloud9 のコンソールで以下のコマンドを実行し確認してみましょう。</p>
 <pre>sam --version
 </pre>
@@ -257,6 +272,7 @@ git push
     
       <google-codelab-step label="AWS SAM から deploy" duration="0">
         <p>必要な初期設定と合わせて、Lambda関数をデプロイしてみましょう</p>
+<p class="image-container"><img alt="08" src="img/a8b78d4693fe1608.png"></p>
 <pre>sam deploy --guided
 </pre>
 <p>以下、対話形式でのプロンプトを通して、初期設定を行い、<code>samconfig.toml</code> ファイルを作成します。</p>
@@ -294,7 +310,8 @@ git push
       </google-codelab-step>
     
       <google-codelab-step label="AWS CodeBuild の準備" duration="5">
-        <h2 is-upgraded>template.yaml の更新</h2>
+        <p class="image-container"><img alt="09" src="img/6590ea340f2d5e9b.png"></p>
+<h2 is-upgraded>template.yaml の更新</h2>
 <p>複数環境に対応するために、<code>template.yaml</code> ファイルを変更します。</p>
 <p>以下を丸っとコピーして上書きしてください。</p>
 <p>Parameters と　FunctionName の部分を追記してます。</p>
@@ -356,7 +373,7 @@ phases:
 </code></pre>
 <aside class="special"><p> buildspec.yaml の中で＄から始まっているものは、CodeBuild プロジェクトの環境変数として、この後AWS コンソールから定義するものです。 </p>
 </aside>
-<p>ここで定義したコマンドが、CodeBuild でビルドする時に実行されるコマンドなのですが、先ほどダメした、sam のコマンドが出てきません。</p>
+<p>ここで定義したコマンドが、CodeBuild でビルドする時に実行されるコマンドなのですが、先ほど試した、sam のコマンドが出てきません。</p>
 <p>それは、CodeBuild が実行時に使用するコンテナには、AWS SAM がインストールされていないためです。</p>
 <p>SAMで使用するテンプレートファイルは CloudFormation の拡張なので、AWS CLI での CloudFormation のオプションをそのまま使うことができます。</p>
 <p>次は、変更したファイルをまとめて、CodeCommit へ push してみましょう。</p>
@@ -369,19 +386,21 @@ git push
       </google-codelab-step>
     
       <google-codelab-step label="AWS CodeBuild プロジェクトの作成" duration="0">
-        <p>コンソールからの操作になります。</p>
-<p>プロジェクトの作成をクリックします</p>
+        <p><img alt="10" src="img/d701d3ebfce1f192.png"> コンソールからの操作になります。</p>
+<p><img alt="10" src="img/dcc0f3f738c96f93.png"> プロジェクトの作成をクリックします。</p>
 <h2 is-upgraded>プロジェクトの設定</h2>
+<p class="image-container"><img alt="10" src="img/7aaff93c98eddb36.png"></p>
 <p>プロジェクト名に以下の文字列をコピーします</p>
 <pre>lambda-cicd-hands-on
 </pre>
 <h2 is-upgraded>ソース</h2>
+<p class="image-container"><img alt="10" src="img/ad447b923cb97713.png"></p>
 <p>ソースプロバイダで「CodeCommit」を選択</p>
 <p>リポジトリで今回作成した「lambda-cicd-hands-on」を選択</p>
 <p>リファレンスタイプはデフォルトのまま「ブランチ」を設定し</p>
 <p>「master」ブランチを選択します。</p>
 <h2 is-upgraded>環境</h2>
-<p>以下の様に設定します</p>
+<p><img alt="10" src="img/6d8c700018542439.png"> 以下の様に設定します</p>
 <table>
 <tr><td colspan="2" rowspan="1"></td><td colspan="1" rowspan="1"></td></tr>
 <tr><td colspan="1" rowspan="1"><p>環境イメージ</p>
@@ -409,10 +428,11 @@ git push
 </td><td colspan="1" rowspan="1"><p>そのまま　</p>
 </td></tr>
 </table>
-<h3 is-upgraded>追加設定</h3>
+<h2 is-upgraded>追加設定</h2>
 <p>隠れている「追加設定」をクリックし、環境変数を4つ設定します</p>
-<p>「環境変数の追加」をクリックすると行を増やすことができます。</p>
-<p>ここで、AWS SAM が作成した S3 Bucket 名を使用します。 S3のコンソールから<code>aws-sam-cli-managed-default-samclisourcebucket</code>で検索し、バケット名をコピーしてください</p>
+<p class="image-container"><img alt="10" src="img/3ec3ccce4aa6eb4.png"></p>
+<p>ここで、AWS SAM が作成した S3 Bucket 名を使用します。 S3のコンソールを開いてください。</p>
+<p><code>aws-sam-cli-managed-default-samclisourcebucket</code>で検索し、バケット名をコピーしてください</p>
 <table>
 <tr><td colspan="1" rowspan="1"><p>名前</p>
 </td><td colspan="1" rowspan="1"><p>値</p>
@@ -435,11 +455,14 @@ git push
 </td><td colspan="1" rowspan="1"><p>プレーンテキスト</p>
 </td></tr>
 </table>
+<h2 is-upgraded>アーティファクト</h2>
+<p class="image-container"><img alt="10" src="img/b31e71dd3e9a338e.png"></p>
+<p>バケット名のところに、同じものをコピーします。</p>
 <p>あとはそのままで大丈夫です。</p>
 <p>「ビルドプロジェクトを作成する」をクリックします。</p>
 <p>プロジェクトが正常に作成されると、自動的に画面が変わるので、それまで待ちます。</p>
-<p>完成したらビルドに必要なIAMを追加していきます。</p>
 <h2 is-upgraded>IAM Role にポリシーを追加</h2>
+<p>IAM Role にポリシーを追加して行きます。</p>
 <p>先ほど、プロジェクトの作成に合わせて作成した IAM ロールに、必要な IAM ポリシー を追加していきます。</p>
 <p>AWS コンソールから、IAMを開いて、左のペインから「ロール」を選択 <code>codebuild-lambda-cicd-hands-on-service-role</code> で検索してください</p>
 <p>この IAM ロール に以下のものをアタッチしてください。</p>
@@ -451,21 +474,22 @@ git push
 <li>AWSLambda_FullAccess</li>
 </ul>
 <p>アタッチ後、IAMの画面は以下の様になります。</p>
+<p class="image-container"><img alt="10" src="img/ff42136ea409fe91.png"></p>
 <h2 is-upgraded>ビルドの開始</h2>
-<p>AWS コンソールから、CodeBuild を開き、「ビルドを開始」ボタンを押下して実行をしてみましょう。</p>
+<p><img alt="10" src="img/cee297b5fb2b5aea.png"> AWS コンソールから、CodeBuild を開き、「ビルドを開始」ボタンを押下して実行をしてみましょう。</p>
 <p>「フェーズ詳細」タブを開くと、進捗がわかります。</p>
+<p class="image-container"><img alt="10" src="img/6f525fdae9bc5c21.png"><img alt="10" src="img/85fad06406618e49.png"></p>
 <p>ステータスが成功になったら、完了です。</p>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="CodePipeline の作成" duration="0">
-        <p>コンソールから作成</p>
-<p>AWS コンソールで CodePipeline を開きます。</p>
-<p>「パイプラインの作成」をクリック</p>
+        <p>コンソールから作業をします <img alt="11" src="img/c63ffe8e94411dae.png"> AWS コンソールで CodePipeline を開きます。</p>
+<p><img alt="11" src="img/d90ac5890966e4d3.png"> 「パイプラインの作成」をクリック</p>
 <p>まずは、開発環境用のパイプラインを作成します。</p>
 <h2 is-upgraded>Step 1 パイプラインの設定を選択する</h2>
-<p>パイプライン名に以下をコピー。</p>
+<p><img alt="11" src="img/56f10afd08f5d031.png"> パイプライン名に以下をコピー。</p>
 <p>開発環境用のパイプラインだとわかる様に、末尾に<code>-dev</code>を付けます。</p>
 <pre>lambda-hands-on-dev
 </pre>
@@ -473,6 +497,7 @@ git push
 <pre>AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-dev
 </pre>
 <h2 is-upgraded>Step 2 ソースステージを追加する</h2>
+<p class="image-container"><img alt="11" src="img/d2918a1763e29894.png"></p>
 <table>
 <tr><td colspan="2" rowspan="1"></td><td colspan="1" rowspan="1"></td></tr>
 <tr><td colspan="1" rowspan="1"><p>ソースプロバイダー</p>
@@ -486,6 +511,7 @@ git push
 </td></tr>
 </table>
 <h2 is-upgraded>Step 3 ビルドステージを追加する</h2>
+<p class="image-container"><img alt="11" src="img/14cc5334b2f7261c.png"></p>
 <table>
 <tr><td colspan="2" rowspan="1"></td><td colspan="1" rowspan="1"></td></tr>
 <tr><td colspan="1" rowspan="1"><p>プロバイダーを構築する</p>
@@ -515,14 +541,22 @@ git push
 </td></tr>
 </table>
 <h2 is-upgraded>Step 4 デプロイステージを追加する</h2>
+<p class="image-container"><img alt="11" src="img/aa477c91914481e.png"></p>
 <p>スキップします。</p>
 <h2 is-upgraded>Step 5 レビュー</h2>
 <p>内容を確認して、「パイプラインを作成する」をクリック。</p>
 <h2 is-upgraded>パイプラインの実行</h2>
 <p>しばらく待つと、パイプラインが動き出します。</p>
 <p>CodeBuild をクリックして、詳細を確認してみましょう。</p>
+<p class="image-container"><img alt="11" src="img/4bbe271cab5a39.png"></p>
 <aside class="warning"><p> ビルドされたLambdaをに Function URLからアクセスする手順を追加 </p>
 </aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Lambda にアクセス" duration="5">
+        <p>開発環境様にデプロイした Lambda にアクセスしてみよう。</p>
 
 
       </google-codelab-step>
@@ -614,8 +648,38 @@ git push
 <li>sam-app-prd</li>
 </ul>
 </li>
-<li>S3 バケットを削除</li>
-<li>IAMもPipeline で作ったやつは残ってるはずなので、削除</li>
+<li>S3 で<code>aws-sam-cli-managed-default-samclisourcebucket</code>から始まるバケットを「空にする」</li>
+<li>CloudFormation で以下のスタックを削除 <ul>
+<li>aws-sam-cli-managed-default</li>
+</ul>
+</li>
+<li>Cloud9 で作成した環境「lambda-cicd-hands-on」を削除</li>
+<li>CodePipelineを削除 <ul>
+<li>lambda-hands-on-dev</li>
+<li>lambda-hands-on-prd</li>
+</ul>
+</li>
+<li>CodeBuild のプロジェクトを削除 <ul>
+<li>lambda-cicd-hands-on</li>
+</ul>
+</li>
+<li>CodeCommit のリポジトリを削除 <ul>
+<li>lambda-cicd-hands-on</li>
+</ul>
+</li>
+<li>IAMもPipeline で作ったやつは残ってるはずなので、削除 <ul>
+<li><code>codebuild-lambda-cicd-hands-on-service-role</code>を削除</li>
+<li>AWSCodePipelineServiceRole-ap-northeast-1-prd</li>
+<li>AWSCodePipelineServiceRole-ap-northeast-1-dev</li>
+<li>cwe-role-ap-northeast-1-lambda-cicd-hands-on-dev</li>
+<li>cwe-role-ap-northeast-1-lambda-cicd-hands-on-prd</li>
+</ul>
+</li>
+<li>CloudWatch のロググループを削除 <ul>
+<li>cwe-role-ap-northeast-1-lambda-cicd-hands-on-dev</li>
+<li>/aws/lambda/sam-app-helloLambdaFunction から始まる</li>
+</ul>
+</li>
 </ul>
 <aside class="warning"><p> ここは、もう一回確認 </p>
 </aside>
