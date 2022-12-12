@@ -767,6 +767,8 @@ Duration: 0:05:00
   - cwe-role-ap-northeast-1-lambda-cicd-hands-on-prd
 - CloudWatch のロググループを削除
   - cwe-role-ap-northeast-1-lambda-cicd-hands-on-dev
+  - /aws/lambda/sam-app-helloLambdaFunction から始まる
+  - 
 
 <aside class="negative">
 ここは、もう一回確認
