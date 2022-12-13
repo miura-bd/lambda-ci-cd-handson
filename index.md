@@ -257,7 +257,7 @@ exports.helloLambdaHandler = async () => {
 }
 ```
 
-先ほどど、同様の手順で、このファイルをCodeCommit に反映させましょう。
+先ほどと、同様の手順で、このファイルをCodeCommit に反映させましょう。
 
 
 ```console
