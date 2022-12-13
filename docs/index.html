@@ -303,6 +303,8 @@ SAM configuration environment [default]:
 <pre>Successfully created/updated stack - sam-app in ap-northeast-1
 </pre>
 <p>この時、デプロイに必要な S3 バケットも同時に作成されています <code>aws-sam-cli-managed-default-samclisourcebucket</code> で始まる名前のバケットが作成されており、後ほど使用します。</p>
+<aside class="warning"><p> S3 が正しく作成されない場合がある？ </p>
+</aside>
 <p>その上に、今回生成した、Lambda Function Url のエンドポイントが表示されていますので、ブラウザで開いてみましょう。</p>
 <p>ブラウザに、<code>Hello, Lambda!</code> が表示されていたら成功です！</p>
 <p>AWS SAM を使って、Lambda関数がデプロイされ、アクセスすることができました！</p>
@@ -722,23 +724,54 @@ git commit -m &#34;テキスト修正&#34;
 <p>右下の「プルリクエストの作成」を押下。 <img alt="14" src="img/38ecba7e102a3816.png"> 「マージ」を押下 <img alt="14" src="img/935ab4ede662aedc.png"> 「プルリクエストのマージ」を押下 <img alt="14" src="img/7d26f8c0822dbfec.png"><code>lambda-hands-on-dev</code>　のパイプラインだけが動き始めます。</p>
 <p>###　Lambda の比較をしてみましょう</p>
 <p><code>lambda-hands-on-dev</code> と <code>lambda-hands-on-prd</code> をそれぞれ開いて、エンドポイントの違いを見てみましょう。</p>
-<p>これで、今回のハンズオンは以上です。</p>
-<p>次の章で、今回作成したリソースを削除しましょう。</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="加重エイリアスを使ってみよう" duration="0">
-        <p>エイリアスの設定を変更して動きを確認してみましょう。</p>
+      <google-codelab-step label="バージョンとエイリアス" duration="0">
+        <p>ここから、おまけです。</p>
+<p>時間に余裕がある方、後で試してみたい方はぜひ。</p>
+<p>エイリアスの設定を変更して動きを確認してみましょう。</p>
 <p>本格的な Blue/Green デプロイとまでは行きませんが、 過去の状態の状態に即座に戻したり、重みに基づいてトラフィックを移動させることができます。</p>
+<p>Lambda の バージョンとエイリアスの動きを簡単に試してみましょう。</p>
 <p>今回は、本番環境にデプロイされた Lambda 関数にミスが発覚し、すぐに元に戻したい。という状況を想定してみましょう</p>
 <h2 is-upgraded>プルリクエストの作成</h2>
 <p>PRODUCTION &lt;- master のプルリクエストを作成し、マージします。</p>
 <p><code>lambda-hands-on-prd</code> の 関数 URL をブラウザで開き、内容を確認します。</p>
+<p>この関数URLを開いたタブはまた後で使用するので、そのまま開いておいてください。</p>
 <p>レスポンス</p>
 <pre>Hello, dev Lambda!
 </pre>
-<p>エイリアスのバージョンを戻すことで、元のメッセージが出る様に手動で変更してみましょう。</p>
+<h2 is-upgraded>エイリアスに紐づくバージョンの変更</h2>
+<p>エイリアスに紐づくバージョンを変更することで、元のメッセージが出る様に手動で変更してみましょう。</p>
+<p class="image-container"><img alt="15" src="img/353e43a11fd83b4.png"></p>
+<p>「バージョン」タブを開いてみると、2つのバージョンが存在していることがわかります。</p>
+<p>バージョンの数字の部分をクリックして、それぞれの「コード」タブから内容の違いを確認します。</p>
+<p>message の部分が</p>
+<p>バージョン１ では、<code>Hello, Lambda!</code></p>
+<p>バージョン２ では、<code>Hello, dev Lambda!</code></p>
+<p>となっていることが、確認できます。</p>
+<p>画面上部のパンクズリストから、<code>lambda-hands-on-prd</code> をクリックして戻ります。</p>
+<p>次に、エイリアスの編集を行なって、バージョンを元に戻してみましょう。</p>
+<p class="image-container"><img alt="15" src="img/8caee1d12116cb4.png"></p>
+<p>「エイリアス」のタブを開きます</p>
+<p>左側の丸をクリックして、編集をクリック</p>
+<p class="image-container"><img alt="15" src="img/83345e4fdd01d567.png"></p>
+<p>バージョンで「1」を選択して、保存します。</p>
+<p>これで、エイリアスに紐づいたバージョンが「1」に変わりました。</p>
+<p>先ほど開いた関数URLのブラウザをリロードしてみましょう。</p>
+<p>表示が<code>Hello, Lambda!</code>に変わったことが確認できます。</p>
+<p>この様にバージョンとエイリアスを使うことで、手動で簡単に前の状態に戻すことが可能になります。</p>
+<h2 is-upgraded>加重エイリアス</h2>
+<p>次に、同じ関数URLからのアクセスを２つのバージョンに確率で振り分けてみましょう。</p>
+<p>先ほどと同様に、「エイリアス」タブから、エイリアスの編集を行います。</p>
+<p class="image-container"><img alt="15" src="img/f310753a47517e71.png"></p>
+<p>上記のバージョンを「2」に</p>
+<p>加重エイリアスを開いて、追加のバージョンを「1」にして、重みを50に設定して、保存します。</p>
+<p class="image-container"><img alt="15" src="img/b53e2e71222f070d.png"></p>
+<p>これで、１つのエイリアスに２つのバージョンが紐づきました。</p>
+<p>この状態で、関数URLを開いたタブをリロードを繰り返すと、<code>Hello, dev Lambda!</code>と<code>Hello, Lambda!</code>が50％の確率で表されます。</p>
+<p>この様に、エイリアスとバージョンを組み合わせると、コードの変更を行うことなく、複数の環境を共存させることが可能になります。</p>
 
 
       </google-codelab-step>
