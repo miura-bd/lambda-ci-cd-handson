@@ -227,6 +227,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: hello-lambda.helloLambdaHandler
+      AutoPublishAlias: SV
       Runtime: nodejs16.x
       Architectures:
         - x86_64
@@ -339,6 +340,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: hello-lambda.helloLambdaHandler
+      AutoPublishAlias: SV
       FunctionName:  # 追加部分
         !Join
           - &#39;&#39;
@@ -720,6 +722,23 @@ git commit -m &#34;テキスト修正&#34;
 <p>右下の「プルリクエストの作成」を押下。 <img alt="14" src="img/38ecba7e102a3816.png"> 「マージ」を押下 <img alt="14" src="img/935ab4ede662aedc.png"> 「プルリクエストのマージ」を押下 <img alt="14" src="img/7d26f8c0822dbfec.png"><code>lambda-hands-on-dev</code>　のパイプラインだけが動き始めます。</p>
 <p>###　Lambda の比較をしてみましょう</p>
 <p><code>lambda-hands-on-dev</code> と <code>lambda-hands-on-prd</code> をそれぞれ開いて、エンドポイントの違いを見てみましょう。</p>
+<p>これで、今回のハンズオンは以上です。</p>
+<p>次の章で、今回作成したリソースを削除しましょう。</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="加重エイリアスを使ってみよう" duration="0">
+        <p>エイリアスの設定を変更して動きを確認してみましょう。</p>
+<p>本格的な Blue/Green デプロイとまでは行きませんが、 過去の状態の状態に即座に戻したり、重みに基づいてトラフィックを移動させることができます。</p>
+<p>今回は、本番環境にデプロイされた Lambda 関数にミスが発覚し、すぐに元に戻したい。という状況を想定してみましょう</p>
+<h2 is-upgraded>プルリクエストの作成</h2>
+<p>PRODUCTION &lt;- master のプルリクエストを作成し、マージします。</p>
+<p><code>lambda-hands-on-prd</code> の 関数 URL をブラウザで開き、内容を確認します。</p>
+<p>レスポンス</p>
+<pre>Hello, dev Lambda!
+</pre>
+<p>エイリアスのバージョンを戻すことで、元のメッセージが出る様に手動で変更してみましょう。</p>
 
 
       </google-codelab-step>
@@ -752,7 +771,7 @@ git commit -m &#34;テキスト修正&#34;
 </ul>
 </li>
 <li>IAMもPipeline で作ったやつは残ってるはずなので、削除 <ul>
-<li><code>codebuild-lambda-cicd-hands-on-service-role</code>を削除</li>
+<li>codebuild-lambda-cicd-hands-on-service-role</li>
 <li>AWSCodePipelineServiceRole-ap-northeast-1-prd</li>
 <li>AWSCodePipelineServiceRole-ap-northeast-1-dev</li>
 <li>cwe-role-ap-northeast-1-lambda-cicd-hands-on-dev</li>
@@ -764,8 +783,11 @@ git commit -m &#34;テキスト修正&#34;
 </ul>
 </li>
 <li>CloudWatch のロググループを削除 <ul>
-<li>cwe-role-ap-northeast-1-lambda-cicd-hands-on-dev</li>
-<li>/aws/lambda/sam-app-helloLambdaFunction から始まる</li>
+<li>/aws/lambda/sam-app-helloLambdaFunction から始まるもの</li>
+<li>/aws/lambda/hello-lambda-prd</li>
+<li>/aws/lambda/hello-lambda-manual</li>
+<li>/aws/lambda/hello-lambda-dev</li>
+<li>/aws/codebuild/lambda-cicd-hands-on</li>
 </ul>
 </li>
 </ul>

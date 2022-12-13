@@ -56,6 +56,7 @@ Duration: 0:05:00
 ## CodeCommit の準備
 
 Duration: 0:05:00
+
 ### リポジトリの作成（コンソールから実施）
 
 ![03タイトル](img/lamda-03-1.png)
@@ -308,6 +309,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: hello-lambda.helloLambdaHandler
+      AutoPublishAlias: SV
       Runtime: nodejs16.x
       Architectures:
         - x86_64
@@ -462,6 +464,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: hello-lambda.helloLambdaHandler
+      AutoPublishAlias: SV
       FunctionName:  # 追加部分
         !Join
           - ''
@@ -960,6 +963,32 @@ AWS コンソールで CodeCommit から プルリクエストを作成してみ
 これで、今回のハンズオンは以上です。
 
 次の章で、今回作成したリソースを削除しましょう。
+
+## 加重エイリアスを使ってみよう
+
+エイリアスの設定を変更して動きを確認してみましょう。
+
+本格的な Blue/Green デプロイとまでは行きませんが、
+過去の状態の状態に即座に戻したり、重みに基づいてトラフィックを移動させることができます。
+
+今回は、本番環境にデプロイされた Lambda 関数にミスが発覚し、すぐに元に戻したい。という状況を想定してみましょう
+
+### プルリクエストの作成
+
+PRODUCTION <- master のプルリクエストを作成し、マージします。
+
+```lambda-hands-on-prd``` の 関数 URL をブラウザで開き、内容を確認します。
+
+レスポンス
+```console
+Hello, dev Lambda!
+```
+
+エイリアスのバージョンを戻すことで、元のメッセージが出る様に手動で変更してみましょう。
+
+
+
+
 
 ## お掃除
 
