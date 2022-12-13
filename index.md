@@ -981,7 +981,7 @@ Duration: 0:05:00
 - CodeCommit のリポジトリを削除
   - lambda-cicd-hands-on
 - IAMもPipeline で作ったやつは残ってるはずなので、削除
-  - ```codebuild-lambda-cicd-hands-on-service-role```を削除
+  - codebuild-lambda-cicd-hands-on-service-role
   - AWSCodePipelineServiceRole-ap-northeast-1-prd
   - AWSCodePipelineServiceRole-ap-northeast-1-dev
   - cwe-role-ap-northeast-1-lambda-cicd-hands-on-dev
@@ -989,9 +989,11 @@ Duration: 0:05:00
 - IAM Policy
   - CodeBuildBasePolicy-lambda-cicd-hands-on-ap-northeast-1
 - CloudWatch のロググループを削除
-  - cwe-role-ap-northeast-1-lambda-cicd-hands-on-dev
-  - /aws/lambda/sam-app-helloLambdaFunction から始まる
-  - 
+  - /aws/lambda/sam-app-helloLambdaFunction から始まるもの
+  - /aws/lambda/hello-lambda-prd
+  - /aws/lambda/hello-lambda-manual
+  - /aws/lambda/hello-lambda-dev
+  - /aws/codebuild/lambda-cicd-hands-on
 
 <aside class="negative">
 ここは、もう一回確認
