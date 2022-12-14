@@ -52,6 +52,8 @@ Duration: 0:05:00
 
 - 東京リージョン(ap-northeast-1)を利用します
 - 指定がない限りはデフォルトのままで進めます。
+- マネジメントコンソールにログイン可能なAdministrator権限のIAMユーザーでの操作を前提にしています。
+- ブラウザはChrome もしくは Firefoxを利用下さい
 
 ## CodeCommit の準備
 
@@ -416,10 +418,6 @@ Successfully created/updated stack - sam-app in ap-northeast-1
 ```aws-sam-cli-managed-default-samclisourcebucket```
 で始まる名前のバケットが作成されており、後ほど使用します。
 
-<aside class="negative">
-S3 が正しく作成されない場合がある？
-</aside>
-
 その上に、今回生成した、Lambda Function Url のエンドポイントが表示されていますので、ブラウザで開いてみましょう。
 
 ブラウザに、```Hello, Lambda!``` が表示されていたら成功です！
@@ -490,11 +488,6 @@ Outputs:
     Description: "Function URLs endpoint"
     Value: !GetAtt helloLambdaFunctionUrl.FunctionUrl
 ```
-
-<aside class="negative">
-この差分がちょっとわかりづらいかも？？
-git diff 追加してみますか
-</aside>
 
 ### buildspec.yml の作成
 
@@ -719,6 +712,11 @@ AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-dev
 
 しばらく待つと、パイプラインが動き出します。
 
+
+<aside class="negative">
+稀に、IAMの作成が間に合わず、エラーになる時がありますが、再度実行することでうまく動きます。
+</aside>
+
 CodeBuild をクリックして、詳細を確認してみましょう。
 
 ![11](img/lamda-11-6.png)
@@ -856,6 +854,10 @@ AWSCodePipelineServiceRole-ap-northeast-1-lambda-cicd-hands-on-prd
 
 本番用のパイプラインが動き始めます。
 
+<aside class="negative">
+稀に、IAMの作成が間に合わず、エラーになる時がありますが、再度実行することでうまく動きます。
+</aside>
+
 ### 本番用 Lambda にアクセス
 
 先ほどと同様に、Lambda にアクセスしてみましょう。
@@ -903,6 +905,7 @@ git checkout feature/text-edit
 ```console
 Switched to branch 'feature/text-edit'
 ```
+
 Cloud9で ```hello-lambda.js``` ファイルを編集します。
 
 message の内容を変更してみましょう。
@@ -961,7 +964,7 @@ AWS コンソールで CodeCommit から プルリクエストを作成してみ
 ![14](img/lamda-14-4.png)
 ```lambda-hands-on-dev```　のパイプラインだけが動き始めます。
 
-###　Lambda の比較をしてみましょう
+### Lambda の比較をしてみましょう
 
 ```lambda-hands-on-dev``` と ```lambda-hands-on-prd``` をそれぞれ開いて、エンドポイントの違いを見てみましょう。
 
@@ -980,7 +983,7 @@ Lambda の バージョンとエイリアスの動きを簡単に試してみま
 
 今回は、本番環境にデプロイされた Lambda 関数にミスが発覚し、すぐに元に戻したい。という状況を想定してみましょう
 
-### プルリクエストの作成
+### 本番へのプルリクエストの作成
 
 PRODUCTION <- master のプルリクエストを作成し、マージします。
 
@@ -989,6 +992,7 @@ PRODUCTION <- master のプルリクエストを作成し、マージします�
 この関数URLを開いたタブはまた後で使用するので、そのまま開いておいてください。
 
 レスポンス
+
 ```console
 Hello, dev Lambda!
 ```
@@ -1072,7 +1076,7 @@ Duration: 0:05:00
   - lambda-cicd-hands-on
 - CodeCommit のリポジトリを削除
   - lambda-cicd-hands-on
-- IAMもPipeline で作ったやつは残ってるはずなので、削除
+- IAM Role
   - codebuild-lambda-cicd-hands-on-service-role
   - AWSCodePipelineServiceRole-ap-northeast-1-lambda-hands-on-dev
   - AWSCodePipelineServiceRole-ap-northeast-1-lambda-hands-on-prd
@@ -1080,13 +1084,13 @@ Duration: 0:05:00
   - cwe-role-ap-northeast-1-lambda-cicd-hands-on-prd
 - IAM Policy
   - CodeBuildBasePolicy-lambda-cicd-hands-on-ap-northeast-1
+  - AWSCodePipelineServiceRole-ap-northeast-1-lambda-hands-on-dev
+  - AWSCodePipelineServiceRole-ap-northeast-1-lambda-hands-on-prd
+  - start-pipeline-execution-ap-northeast-1-lambda-hands-on-dev
+  - start-pipeline-execution-ap-northeast-1-lambda-hands-on-prd
 - CloudWatch のロググループを削除
   - /aws/lambda/sam-app-helloLambdaFunction から始まるもの
   - /aws/lambda/hello-lambda-prd
   - /aws/lambda/hello-lambda-manual
   - /aws/lambda/hello-lambda-dev
   - /aws/codebuild/lambda-cicd-hands-on
-
-<aside class="negative">
-ここは、もう一回確認
-</aside>

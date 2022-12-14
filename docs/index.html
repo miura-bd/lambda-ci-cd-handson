@@ -76,6 +76,8 @@
 <ul>
 <li>東京リージョン(ap-northeast-1)を利用します</li>
 <li>指定がない限りはデフォルトのままで進めます。</li>
+<li>マネジメントコンソールにログイン可能なAdministrator権限のIAMユーザーでの操作を前提にしています。</li>
+<li>ブラウザはChrome もしくは Firefoxを利用下さい</li>
 </ul>
 
 
@@ -303,8 +305,6 @@ SAM configuration environment [default]:
 <pre>Successfully created/updated stack - sam-app in ap-northeast-1
 </pre>
 <p>この時、デプロイに必要な S3 バケットも同時に作成されています <code>aws-sam-cli-managed-default-samclisourcebucket</code> で始まる名前のバケットが作成されており、後ほど使用します。</p>
-<aside class="warning"><p> S3 が正しく作成されない場合がある？ </p>
-</aside>
 <p>その上に、今回生成した、Lambda Function Url のエンドポイントが表示されていますので、ブラウザで開いてみましょう。</p>
 <p>ブラウザに、<code>Hello, Lambda!</code> が表示されていたら成功です！</p>
 <p>AWS SAM を使って、Lambda関数がデプロイされ、アクセスすることができました！</p>
@@ -364,8 +364,6 @@ Outputs:
     Description: &#34;Function URLs endpoint&#34;
     Value: !GetAtt helloLambdaFunctionUrl.FunctionUrl
 </code></pre>
-<aside class="warning"><p> この差分がちょっとわかりづらいかも？？ git diff 追加してみますか </p>
-</aside>
 <h2 is-upgraded>buildspec.yml の作成</h2>
 <p>CodeBuild での実行を定義する buildspec.yml ファイルを作成します</p>
 <pre>touch buildspec.yml
@@ -559,6 +557,8 @@ git push
 <p>内容を確認して、「パイプラインを作成する」をクリック。</p>
 <h2 is-upgraded>パイプラインの実行</h2>
 <p>しばらく待つと、パイプラインが動き出します。</p>
+<aside class="warning"><p> 稀に、IAMの作成が間に合わず、エラーになる時がありますが、再度実行することでうまく動きます。 </p>
+</aside>
 <p>CodeBuild をクリックして、詳細を確認してみましょう。</p>
 <p class="image-container"><img alt="11" src="img/4bbe271cab5a39.png"></p>
 
@@ -662,6 +662,8 @@ branch &#39;PRODUCTION&#39; set up to track &#39;origin/PRODUCTION&#39;.
 <p>内容を確認して、「パイプラインを作成する」をクリック。</p>
 <p class="image-container"><img alt="13" src="img/a80bb272e156d127.png"></p>
 <p>本番用のパイプラインが動き始めます。</p>
+<aside class="warning"><p> 稀に、IAMの作成が間に合わず、エラーになる時がありますが、再度実行することでうまく動きます。 </p>
+</aside>
 <h2 is-upgraded>本番用 Lambda にアクセス</h2>
 <p>先ほどと同様に、Lambda にアクセスしてみましょう。</p>
 <p><code>hello-lambda-prd</code> という名前の関数がデプロイされています。</p>
@@ -725,7 +727,7 @@ git commit -m &#34;テキスト修正&#34;
 </pre>
 <p>変更部分が表示されます。</p>
 <p>右下の「プルリクエストの作成」を押下。 <img alt="14" src="img/38ecba7e102a3816.png"> 「マージ」を押下 <img alt="14" src="img/935ab4ede662aedc.png"> 「プルリクエストのマージ」を押下 <img alt="14" src="img/7d26f8c0822dbfec.png"><code>lambda-hands-on-dev</code>　のパイプラインだけが動き始めます。</p>
-<p>###　Lambda の比較をしてみましょう</p>
+<h2 is-upgraded>Lambda の比較をしてみましょう</h2>
 <p><code>lambda-hands-on-dev</code> と <code>lambda-hands-on-prd</code> をそれぞれ開いて、エンドポイントの違いを見てみましょう。</p>
 
 
@@ -738,7 +740,7 @@ git commit -m &#34;テキスト修正&#34;
 <p>本格的な Blue/Green デプロイとまでは行きませんが、 過去の状態の状態に即座に戻したり、重みに基づいてトラフィックを移動させることができます。</p>
 <p>Lambda の バージョンとエイリアスの動きを簡単に試してみましょう。</p>
 <p>今回は、本番環境にデプロイされた Lambda 関数にミスが発覚し、すぐに元に戻したい。という状況を想定してみましょう</p>
-<h2 is-upgraded>プルリクエストの作成</h2>
+<h2 is-upgraded>本番へのプルリクエストの作成</h2>
 <p>PRODUCTION &lt;- master のプルリクエストを作成し、マージします。</p>
 <p><code>lambda-hands-on-prd</code> の 関数 URL をブラウザで開き、内容を確認します。</p>
 <p>この関数URLを開いたタブはまた後で使用するので、そのまま開いておいてください。</p>
@@ -806,7 +808,7 @@ git commit -m &#34;テキスト修正&#34;
 <li>lambda-cicd-hands-on</li>
 </ul>
 </li>
-<li>IAMもPipeline で作ったやつは残ってるはずなので、削除 <ul>
+<li>IAM Role <ul>
 <li>codebuild-lambda-cicd-hands-on-service-role</li>
 <li>AWSCodePipelineServiceRole-ap-northeast-1-lambda-hands-on-dev</li>
 <li>AWSCodePipelineServiceRole-ap-northeast-1-lambda-hands-on-prd</li>
@@ -816,6 +818,10 @@ git commit -m &#34;テキスト修正&#34;
 </li>
 <li>IAM Policy <ul>
 <li>CodeBuildBasePolicy-lambda-cicd-hands-on-ap-northeast-1</li>
+<li>AWSCodePipelineServiceRole-ap-northeast-1-lambda-hands-on-dev</li>
+<li>AWSCodePipelineServiceRole-ap-northeast-1-lambda-hands-on-prd</li>
+<li>start-pipeline-execution-ap-northeast-1-lambda-hands-on-dev</li>
+<li>start-pipeline-execution-ap-northeast-1-lambda-hands-on-prd</li>
 </ul>
 </li>
 <li>CloudWatch のロググループを削除 <ul>
@@ -827,8 +833,6 @@ git commit -m &#34;テキスト修正&#34;
 </ul>
 </li>
 </ul>
-<aside class="warning"><p> ここは、もう一回確認 </p>
-</aside>
 
 
       </google-codelab-step>
