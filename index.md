@@ -3,7 +3,7 @@ summary: 説明文
 id: docs
 categories: codelab,markdown
 environments: Web
-status: Draft
+status: Published
 feedback link: https://github.com/miura-bd/lambda-ci-cd-handson/issues
 
 # Lambda CI/CD ハンズオン
