@@ -1061,13 +1061,13 @@ message の部分が
 
 Duration: 0:05:00
 
-- CloudFormation で、以下のスタックを削除
-  - sam-app
-  - sam-app-dev
-  - sam-app-prd
 - S3 で```aws-sam-cli-managed-default-samclisourcebucket```から始まるバケットを「空にする」
 - CloudFormation で以下のスタックを削除
   - aws-sam-cli-managed-default
+    - このスタックの削除でS3バケットも削除される。
+  - sam-app
+  - sam-app-dev
+  - sam-app-prd
 - Cloud9 で作成した環境「lambda-cicd-hands-on」を削除
 - CodePipelineを削除
   - lambda-hands-on-dev

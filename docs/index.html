@@ -783,15 +783,15 @@ git commit -m &#34;テキスト修正&#34;
     
       <google-codelab-step label="お掃除" duration="5">
         <ul>
-<li>CloudFormation で、以下のスタックを削除 <ul>
+<li>S3 で<code>aws-sam-cli-managed-default-samclisourcebucket</code>から始まるバケットを「空にする」</li>
+<li>CloudFormation で以下のスタックを削除 <ul>
+<li>aws-sam-cli-managed-default <ul>
+<li>このスタックの削除でS3バケットも削除される。</li>
+</ul>
+</li>
 <li>sam-app</li>
 <li>sam-app-dev</li>
 <li>sam-app-prd</li>
-</ul>
-</li>
-<li>S3 で<code>aws-sam-cli-managed-default-samclisourcebucket</code>から始まるバケットを「空にする」</li>
-<li>CloudFormation で以下のスタックを削除 <ul>
-<li>aws-sam-cli-managed-default</li>
 </ul>
 </li>
 <li>Cloud9 で作成した環境「lambda-cicd-hands-on」を削除</li>
