@@ -518,7 +518,7 @@ phases:
 ```
 
 <aside class="positive">
-buildspec.yaml の中で＄から始まっているものは、CodeBuild プロジェクトの環境変数として、この後AWS コンソールから定義するものです。
+buildspec.yml の中で＄から始まっているものは、CodeBuild プロジェクトの環境変数として、この後AWS コンソールから定義するものです。
 </aside>
 
 ここで定義したコマンドが、CodeBuild でビルドする時に実行されるコマンドなのですが、先ほど試した、sam のコマンドが出てきません。
@@ -575,6 +575,7 @@ lambda-cicd-hands-on
 | オペレーティングシステム| Amazon Linux 2 |
 | ランタイム | Standard |
 | イメージ | aws/codebuild/amazonlinux2-x86_64-standard:4.0 |
+| イメージのバージョン | このランタイムバージョンには常に最新のイメージを使用してください |
 | 環境タイプ | Linux |
 | 特権付与 | 選択しない |
 | サービスロール | 新しいサービルロール　|
@@ -1073,8 +1074,8 @@ Duration: 0:05:00
   - lambda-cicd-hands-on
 - IAMもPipeline で作ったやつは残ってるはずなので、削除
   - codebuild-lambda-cicd-hands-on-service-role
-  - AWSCodePipelineServiceRole-ap-northeast-1-prd
-  - AWSCodePipelineServiceRole-ap-northeast-1-dev
+  - AWSCodePipelineServiceRole-ap-northeast-1-lambda-hands-on-dev
+  - AWSCodePipelineServiceRole-ap-northeast-1-lambda-hands-on-prd
   - cwe-role-ap-northeast-1-lambda-cicd-hands-on-dev
   - cwe-role-ap-northeast-1-lambda-cicd-hands-on-prd
 - IAM Policy
