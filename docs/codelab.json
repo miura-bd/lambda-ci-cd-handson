@@ -3,7 +3,7 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2022-12-15T22:18:47+09:00",
+  "updated": "2022-12-15T22:40:14+09:00",
   "id": "docs",
   "duration": 45,
   "title": "はじめての Lambda CI/CD ハンズオン",
@@ -21,6 +21,6 @@
     "web"
   ],
   "feedback": "https://github.com/miura-bd/lambda-ci-cd-handson/issues",
-  "ga": "346699567",
+  "ga": "G-S3929GEEG9",
   "url": "docs"
 }

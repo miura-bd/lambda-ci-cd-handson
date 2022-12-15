@@ -5,15 +5,13 @@ categories: codelab,markdown
 environments: Web
 status: Published
 feedback link: https://github.com/miura-bd/lambda-ci-cd-handson/issues
-analytics account: 346699567
+analytics account: G-S3929GEEG9
 
 # はじめての Lambda CI/CD ハンズオン
 
 ## はじめに
 
 Duration: 0:05:00
-
-### はじめに
 
 この資料は、2022年12月15日に行われた
 [JAWS-UG 初心者支部 \#52](https://jawsug-bgnr.connpass.com/event/267203/) で使用したハンズオン資料です
