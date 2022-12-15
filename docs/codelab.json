@@ -3,11 +3,11 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2022-12-15T22:03:48+09:00",
+  "updated": "2022-12-15T22:18:47+09:00",
   "id": "docs",
   "duration": 45,
   "title": "はじめての Lambda CI/CD ハンズオン",
-  "summary": "説明文",
+  "summary": "JAWS-UG 初心者支部 52回の資料",
   "source": "index.md",
   "theme": "",
   "status": [
@@ -21,5 +21,6 @@
     "web"
   ],
   "feedback": "https://github.com/miura-bd/lambda-ci-cd-handson/issues",
+  "ga": "346699567",
   "url": "docs"
 }

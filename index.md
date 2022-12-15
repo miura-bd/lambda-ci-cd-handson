@@ -1,10 +1,11 @@
 author: 三浦一樹
-summary: 説明文
+summary: JAWS-UG 初心者支部 52回の資料
 id: docs
 categories: codelab,markdown
 environments: Web
 status: Published
 feedback link: https://github.com/miura-bd/lambda-ci-cd-handson/issues
+analytics account: 346699567
 
 # はじめての Lambda CI/CD ハンズオン
 
