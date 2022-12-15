@@ -1080,8 +1080,8 @@ Duration: 0:05:00
   - codebuild-lambda-cicd-hands-on-service-role
   - AWSCodePipelineServiceRole-ap-northeast-1-lambda-hands-on-dev
   - AWSCodePipelineServiceRole-ap-northeast-1-lambda-hands-on-prd
-  - cwe-role-ap-northeast-1-lambda-cicd-hands-on-dev
-  - cwe-role-ap-northeast-1-lambda-cicd-hands-on-prd
+  - cwe-role-ap-northeast-1-lambda-hands-on-dev
+  - cwe-role-ap-northeast-1-lambda-hands-on-prd
 - IAM Policy
   - CodeBuildBasePolicy-lambda-cicd-hands-on-ap-northeast-1
   - AWSCodePipelineServiceRole-ap-northeast-1-lambda-hands-on-dev
