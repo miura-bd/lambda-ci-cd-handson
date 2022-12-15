@@ -6,13 +6,18 @@ environments: Web
 status: Published
 feedback link: https://github.com/miura-bd/lambda-ci-cd-handson/issues
 
-# Lambda CI/CD ハンズオン
+# はじめての Lambda CI/CD ハンズオン
 
 ## はじめに
 
 Duration: 0:05:00
 
 ### はじめに
+
+この資料は、2022年12月15日に行われた
+[JAWS-UG 初心者支部 \#52](https://jawsug-bgnr.connpass.com/event/267203/) で使用したハンズオン資料です
+
+Lambda の CI/CD を実現するための最低限の構成を実際に構築してみましょう。
 
 #### 色々な選択肢
 
@@ -30,7 +35,6 @@ LambdaのCI/CDを構築するための方法は、様々ありますが、
   - CodePipeline
 - IDE
   - AWS Cloud9
-
 
 ## 今回構築するもの
 
